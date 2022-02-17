@@ -1,0 +1,77 @@
+"Account of a person who utilizes this application."
+type User {
+    "Unique primary key."
+    id: ID!
+
+    "Unique email address."
+    email: String!
+
+    "When the email was verified."
+    emailVerifiedAt: DateTime @rename(attribute: "email_verified_at")
+
+    "When the account was created."
+    createdAt: DateTime! @rename(attribute: "created_at")
+
+    "When the account was last updated."
+    updatedAt: DateTime! @rename(attribute: "updated_at")
+
+    "User's roles"
+    roles: [Role]! @hasMany
+
+    permissions: [Permission]!
+        @field(resolver: "App\\Models\\User@allPermissions")
+}
+
+extend type Query @guard {
+    "Find a single user by an identifying attribute."
+    user(
+        "Search by primary key."
+        id: ID @eq @rules(apply: ["prohibits:email", "required_without:email"])
+
+        "Search by email address."
+        email: String
+            @eq
+            @rules(apply: ["prohibits:id", "required_without:id", "email"])
+    ): User @find @can(ability: "users.view")
+
+    "List multiple users."
+    users(
+        "Filters by email. Accepts SQL LIKE wildcards `%` and `_`."
+        email: String @where(operator: "like")
+
+        orderBy: _
+            @orderBy(
+                columns: [
+                    "id"
+                    "email"
+                    "created_at"
+                    "updated_at"
+                    "email_verified_at"
+                ]
+            )
+    ): [User!]!
+        @paginate(defaultCount: 30, maxCount: 50)
+        @can(ability: "users.view")
+}
+
+input CreateUserInput {
+    email: String! @rules(apply: ["email", "unique:users,email"])
+    password: String! @rules(apply: ["min:8"]) @hash
+    roles: CreateRolesHasMany
+}
+
+input UpdateUserInput {
+    email: String @rules(apply: ["email", "unique:users,email"])
+    password: String @rules(apply: ["min:8"]) @hash
+    roles: UpdateRolesHasMany
+}
+
+extend type Mutation @guard {
+    createUser(input: CreateUserInput! @spread): User!
+        @create
+        @can(ability: "users.create")
+    updateUser(id: ID!, input: UpdateUserInput! @spread): User!
+        @update
+        @selfOrCan(ability: "users.edit")
+    deleteUser(id: ID!): User @delete @can(ability: "users.delete") @notSelf
+}

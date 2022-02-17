@@ -1,0 +1,112 @@
+"Set of permissions"
+type Role @model(class: "Spatie\\Permission\\Models\\Role") {
+    "Unique primary key."
+    id: ID!
+
+    "Unique name."
+    name: String!
+
+    "Role's permissions"
+    permissions: [Permission!]! @hasMany
+
+    "When the role was created."
+    createdAt: DateTime! @rename(attribute: "created_at")
+
+    "When the role was last updated."
+    updatedAt: DateTime! @rename(attribute: "updated_at")
+}
+
+"Permission to do particular action in this application."
+type Permission @model(class: "Spatie\\Permission\\Models\\Permission") {
+    "Unique primary key."
+    id: ID!
+
+    "Unique name."
+    name: String!
+
+    "Roles with this permission"
+    roles: [Role!]! @hasMany
+}
+
+extend type Query @guard {
+    "Find a single permission by an identifying attribute."
+    permission(
+        "Search by primary key."
+        id: ID @eq @rules(apply: ["prohibits:name", "required_without:name"])
+
+        "Search by name."
+        name: String @eq @rules(apply: ["prohibits:id", "required_without:id"])
+    ): Permission @find @can(ability: "roles.view")
+
+    "List multiple permissions."
+    permissions(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        name: String @where(operator: "like")
+
+        orderBy: _ @orderBy(columns: ["id", "name"])
+    ): [Permission!]!
+        @paginate(defaultCount: 30, maxCount: 50)
+        @can(ability: "roles.view")
+
+    "Find a single role by an identifying attribute."
+    role(
+        "Search by primary key."
+        id: ID @eq @rules(apply: ["prohibits:name", "required_without:name"])
+
+        "Search by name."
+        name: String @eq @rules(apply: ["prohibits:id", "required_without:id"])
+    ): Role @find @can(ability: "roles.view")
+
+    "List multiple roles."
+    roles(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        name: String @where(operator: "like")
+
+        orderBy: _ @orderBy(columns: ["id", "name", "created_at", "updated_at"])
+    ): [Role!]!
+        @paginate(defaultCount: 30, maxCount: 50)
+        @can(ability: "roles.view")
+}
+
+input CreateRoleInput {
+    name: String! @rules(apply: ["unique:roles,name"])
+    permissions: CreatePermissionsHasMany
+}
+
+input UpdateRoleInput {
+    name: String @rules(apply: ["unique:roles,name"])
+    permissions: UpdatePermissionsHasMany
+}
+
+input CreateRolesHasMany {
+    create: [CreateRoleInput!]
+    update: [UpdateRoleInput!]
+    connect: [ID!]
+}
+
+input UpdateRolesHasMany {
+    create: [CreateRoleInput!]
+    update: [UpdateRoleInput!]
+    delete: [ID!]
+    connect: [ID!]
+    disconnect: [ID!]
+}
+
+input CreatePermissionsHasMany {
+    connect: [ID!]
+}
+
+input UpdatePermissionsHasMany {
+    connect: [ID!]
+    disconnect: [ID!]
+}
+
+extend type Mutation @guard {
+    createRole(input: CreateRoleInput! @spread): Role
+        @create
+        @can(ability: "roles.create")
+    updateRole(id: ID!, input: UpdateRoleInput! @spread): Role
+        @update
+        @can(ability: "roles.edit")
+    deleteRole(id: ID!): Role @delete @can(ability: "roles.delete")
+}

@@ -1,0 +1,29 @@
+extend type Mutation {
+    "Returns auth token to be used in http header."
+    login(
+        email: String! @rules(apply: ["email"])
+        password: String!
+        device: String!
+    ): String!
+
+    "Deletes auth token from database."
+    logout: String!
+
+    "Sends an email with reset password link. Url param can have placeholders __EMAIL__ and __TOKEN__ that will be replaced with email address and token."
+    forgotPassword(
+        email: String! @rules(apply: ["email"])
+        url: String!
+    ): String!
+
+    "Sets a new password. Requires token generated with the 'forgotPassword' mutation."
+    resetPassword(
+        email: String! @rules(apply: ["email"])
+        token: String!
+        password: String! @rules(apply: ["min:8"]) @hash
+    ): String!
+}
+
+extend type Query {
+    "Returns auth user's data."
+    me: User! @guard @auth
+}
