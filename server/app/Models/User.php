@@ -2,17 +2,21 @@
 
 namespace App\Models;
 
+use App\Http\Traits\HasPivot;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable, HasRoles, CanResetPassword;
+    use HasApiTokens, HasFactory, HasPivot, Notifiable, HasRoles, CanResetPassword;
 
     /**
      * The attributes that are mass assignable.
@@ -44,8 +48,15 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function allPermissions(User $user)
+    /**
+     * The vehicles that belong to this user.
+     */
+    public function vehicles(): BelongsToMany
     {
-        return $user->getAllPermissions();
+        $max_order = DB::table('user_vehicle')
+            ->where('user_id', '=', $this->id)
+            ->get()
+            ->max('order');
+        return $this->belongsToMany(Vehicle::class)->withPivot('can_add', 'can_edit', 'can_delete', 'order');
     }
 }

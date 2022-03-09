@@ -1,0 +1,133 @@
+type Vehicle {
+    "Unique primary key."
+    id: ID!
+
+    "Unique name of the vehicle"
+    name: String!
+
+    "Is the price required when adding a fueling to the vehicle"
+    priceSetting: VehicleSettings! @rename(attribute: "price_setting")
+
+    "Is a photo of the receipt required when adding a fueling to the vehicle"
+    photoSetting: VehicleSettings! @rename(attribute: "photo_setting")
+
+    "Type of fuel"
+    fuel: VehicleFuel!
+
+    "Users who have access to the vehicle"
+    users: [User] @hasMany
+
+    "Creation date"
+    createdAt: DateTime! @rename(attribute: "created_at")
+
+    "Last update date"
+    updatedAt: DateTime! @rename(attribute: "updated_at")
+
+    "Does the user have permission to add fuelings to the vehicle"
+    canAdd: Boolean
+        @field(
+            resolver: "App\\Models\\Vehicle@pivotDataResolver"
+            args: ["can_add"]
+        )
+
+    "Does the user have permission to edit fuelings of the vehicle"
+    canEdit: Boolean
+        @field(
+            resolver: "App\\Models\\Vehicle@pivotDataResolver"
+            args: ["can_edit"]
+        )
+
+    "Does the user have permission to delete fuelings of the vehicle"
+    canDelete: Boolean
+        @field(
+            resolver: "App\\Models\\Vehicle@pivotDataResolver"
+            args: ["can_delete"]
+        )
+    "Order number of the vehicle for particular user"
+    order: Int
+        @field(
+            resolver: "App\\Models\\Vehicle@pivotDataResolver"
+            args: ["order"]
+        )
+}
+
+enum VehicleSettings {
+    DISABLED @enum(value: "disabled")
+    OPTIONAL @enum(value: "optional")
+    REQUIRED @enum(value: "required")
+}
+
+enum VehicleFuel {
+    PETROL @enum(value: "petrol")
+    DIESEL @enum(value: "diesel")
+    LPG @enum(value: "LPG")
+    CNG @enum(value: "CNG")
+    HYDROGEN @enum(value: "hydrogen")
+    ELECTRICITY @enum(value: "electricity")
+    OTHER @enum(value: "other")
+}
+
+extend type Query {
+    vehicle(
+        id: ID @eq @rules(apply: ["prohibits:name", "required_without:name"])
+        name: String @eq @rules(apply: ["prohibits:id", "required_without:id"])
+    ): Vehicle @find
+
+    vehicles(
+        "Filters by name. Accepts SQL LIKE wildcards `%` and `_`."
+        name: String @where(operator: "like")
+
+        orderBy: _ @orderBy(columns: ["id", "name"])
+    ): [Vehicle!]! @paginate(defaultCount: 30, maxCount: 50)
+}
+
+input CreateVehicleInput {
+    name: String!
+    priceSetting: VehicleSettings
+    photoSetting: VehicleSettings
+    fuel: VehicleFuel!
+    users: CreateVehiclesHasMany
+}
+
+input UpdateVehicleInput {
+    name: String
+    priceSetting: VehicleSettings
+    photoSetting: VehicleSettings
+    fuel: VehicleFuel
+    users: UpdateVehiclesHasMany
+}
+
+input CreateVehiclesHasMany {
+    connect: [CreateVehiclesHasManyConnect!]
+}
+
+input UpdateVehiclesHasMany {
+    connect: [UpdateVehiclesHasManyConnect!]
+        @rename(attribute: "syncWithoutDetaching")
+    disconnect: [ID!]
+}
+
+input CreateVehiclesHasManyConnect {
+    id: ID!
+    canAdd: Boolean @rename(attribute: "can_add")
+    canEdit: Boolean @rename(attribute: "can_edit")
+    canDelete: Boolean @rename(attribute: "can_delete")
+}
+
+input UpdateVehiclesHasManyConnect {
+    id: ID!
+    canAdd: Boolean @rename(attribute: "can_add")
+    canEdit: Boolean @rename(attribute: "can_edit")
+    canDelete: Boolean @rename(attribute: "can_delete")
+    order: Int
+}
+
+extend type Mutation @guard {
+    createVehicle(input: CreateVehicleInput! @spread): Vehicle!
+        @create
+        @can(ability: "vehicles.create")
+    updateVehicle(id: ID!, input: UpdateVehicleInput! @spread): Vehicle!
+        @update
+        @can(ability: "vehicles.edit")
+    deleteVehicle(id: ID!): Vehicle @delete @can(ability: "vehicles.delete")
+}

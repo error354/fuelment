@@ -5,3 +5,4 @@ scalar DateTime
 #import auth.graphql
 #import user.graphql
 #import role.graphql
+#import vehicle.graphql

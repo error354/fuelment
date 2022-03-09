@@ -18,8 +18,32 @@ type User {
     "User's roles"
     roles: [Role]! @hasMany
 
-    permissions: [Permission]!
-        @field(resolver: "App\\Models\\User@allPermissions")
+    "User's permissions"
+    permissions: [Permission]! @method(name: "getAllPermissions")
+
+    "User's vehicles"
+    vehicles: [Vehicle]! @hasMany
+
+    "Does the user have permission to add fuelings to the vehicle"
+    canAdd: Boolean
+        @field(
+            resolver: "App\\Models\\User@pivotDataResolver"
+            args: ["can_add"]
+        )
+
+    "Does the user have permission to edit fuelings of the vehicle"
+    canEdit: Boolean
+        @field(
+            resolver: "App\\Models\\User@pivotDataResolver"
+            args: ["can_edit"]
+        )
+
+    "Does the user have permission to delete fuelings of the vehicle"
+    canDelete: Boolean
+        @field(
+            resolver: "App\\Models\\User@pivotDataResolver"
+            args: ["can_delete"]
+        )
 }
 
 extend type Query @guard {
@@ -64,6 +88,7 @@ input UpdateUserInput {
     email: String @rules(apply: ["email", "unique:users,email"])
     password: String @rules(apply: ["min:8"]) @hash
     roles: UpdateRolesHasMany
+    vehicles: UpdateVehiclesHasMany
 }
 
 extend type Mutation @guard {
