@@ -79,15 +79,10 @@ input UpdateRoleInput {
 }
 
 input CreateRolesHasMany {
-    create: [CreateRoleInput!]
-    update: [UpdateRoleInput!]
     connect: [ID!]
 }
 
 input UpdateRolesHasMany {
-    create: [CreateRoleInput!]
-    update: [UpdateRoleInput!]
-    delete: [ID!]
     connect: [ID!]
     disconnect: [ID!]
 }
