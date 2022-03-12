@@ -63,7 +63,9 @@ class User extends Authenticatable
 
         $max_order = 0;
         static::belongsToManySyncing(function ($relation, $parent, $ids, $attributes) use (&$max_order) {
-            $max_order = $parent->vehicles->max('pivot.order');
+            if ($relation === "vehicles") {
+                $max_order = $parent->vehicles->max('pivot.order');
+            }
         });
 
         static::belongsToManySynced(function ($relation, $parent, $ids, $connections) use (&$max_order) {
