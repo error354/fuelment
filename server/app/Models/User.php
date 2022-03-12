@@ -13,10 +13,11 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Chelout\RelationshipEvents\Concerns\HasBelongsToManyEvents;
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, HasPivot, Notifiable, HasRoles, CanResetPassword;
+    use HasApiTokens, HasFactory, HasPivot, Notifiable, HasRoles, CanResetPassword, HasBelongsToManyEvents;
 
     /**
      * The attributes that are mass assignable.
@@ -53,10 +54,40 @@ class User extends Authenticatable
      */
     public function vehicles(): BelongsToMany
     {
-        $max_order = DB::table('user_vehicle')
-            ->where('user_id', '=', $this->id)
-            ->get()
-            ->max('order');
-        return $this->belongsToMany(Vehicle::class)->withPivot('can_add', 'can_edit', 'can_delete', 'order');
+        return $this->belongsToMany(Vehicle::class)->withPivot('can_add', 'can_edit', 'can_delete', 'order')->orderByPivot('order');
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+
+        $max_order = 0;
+        static::belongsToManySyncing(function ($relation, $parent, $ids, $attributes) use (&$max_order) {
+            $max_order = $parent->vehicles->max('pivot.order');
+        });
+
+        static::belongsToManySynced(function ($relation, $parent, $ids, $connections) use (&$max_order) {
+            if ($relation === "vehicles") {
+                $user = User::find($parent->id);
+                foreach ($connections as $key => $connection) {
+                    if (array_key_exists("order", $connection)) {
+                        if ($connection["order"] > $max_order) {
+                            $connection["order"] = $max_order;
+                            $user->vehicles()->updateExistingPivot($key, ["order" => $max_order]);
+                        }
+                        $new_order = 0;
+                        foreach ($parent->vehicles as $vehicle) {
+                            if ($new_order === $connection["order"]) {
+                                $new_order++;
+                            }
+                            if ($vehicle->id !== $key) {
+                                $user->vehicles()->updateExistingPivot($vehicle->id, ["order" => $new_order]);
+                                $new_order++;
+                            }
+                        }
+                    }
+                }
+            }
+        });
     }
 }
