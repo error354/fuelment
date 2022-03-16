@@ -16,13 +16,13 @@ type User {
     updatedAt: DateTime! @rename(attribute: "updated_at")
 
     "User's roles"
-    roles: [Role]! @hasMany
+    roles: [Role]! @belongsToMany
 
     "User's permissions"
     permissions: [Permission]! @method(name: "getAllPermissions")
 
     "User's vehicles"
-    vehicles: [Vehicle]! @hasMany
+    vehicles: [Vehicle]! @belongsToMany
 
     "Does the user have permission to add fuelings to the vehicle"
     canAdd: Boolean
