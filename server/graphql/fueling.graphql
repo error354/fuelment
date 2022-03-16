@@ -24,6 +24,12 @@ type Fueling {
     price: Float
 }
 
+extend type Query {
+    fueling(id: ID @eq): Fueling @find
+    fuelings(vehicleId: ID! @where(key: "vehicle_id")): [Fueling!]!
+        @paginate(defaultCount: 30, maxCount: 50)
+}
+
 input CreateFuelingInput @validator {
     amount: Float!
     mileage: Float!
