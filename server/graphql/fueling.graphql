@@ -1,0 +1,50 @@
+type Fueling {
+    "Unique primary key."
+    id: ID!
+
+    "Primary key of associated vehicle"
+    vehicle: Vehicle! @belongsTo
+
+    "Amount of fuel"
+    amount: Float!
+
+    "Mileage at the moment of fueling"
+    mileage: Float!
+
+    "Was it full fueling"
+    full: Boolean!
+
+    "Combustion since the previous refueling"
+    fuelConsumption: Float @rename(attribute: "fuel_consumption")
+
+    "Date of fueling"
+    date: Date!
+
+    "Fuel's price for one unit"
+    price: Float
+}
+
+input CreateFuelingInput @validator {
+    amount: Float!
+    mileage: Float!
+    full: Boolean!
+    date: Date!
+    price: Float
+}
+
+input UpdateFuelingInput @validator {
+    amount: Float
+    mileage: Float
+    full: Boolean
+    date: Date
+    price: Float
+}
+
+extend type Mutation @guard {
+    updateFueling(id: ID!, input: UpdateFuelingInput! @spread): Fueling!
+        @update
+        @can(ability: "update", injectArgs: true)
+    deleteFueling(id: [ID!]!): [Fueling!]!
+        @delete
+        @can(ability: "delete", injectArgs: true)
+}

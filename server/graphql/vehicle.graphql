@@ -15,7 +15,7 @@ type Vehicle {
     fuel: VehicleFuel!
 
     "Users who have access to the vehicle"
-    users: [User] @hasMany
+    users: [User] @belongsToMany
 
     "Creation date"
     createdAt: DateTime! @rename(attribute: "created_at")
@@ -49,6 +49,16 @@ type Vehicle {
             resolver: "App\\Models\\Vehicle@pivotDataResolver"
             args: ["order"]
         )
+
+    "Fuelings of the vehicle"
+    fuelings: [Fueling] @hasMany
+
+    "Vehicle's average fuel consumption"
+    avgFuelConsumption: Float
+        @field(
+            resolver: "App\\Models\\Vehicle@getAverageFuelConsumption"
+        )
+
 }
 
 enum VehicleSettings {
@@ -95,6 +105,11 @@ input UpdateVehicleInput {
     photoSetting: VehicleSettings
     fuel: VehicleFuel
     users: UpdateVehiclesHasMany
+    fuelings: UpdateVehicleFuelingHasMany
+}
+
+input UpdateVehicleFuelingHasMany {
+    create: [CreateFuelingInput]
 }
 
 input CreateVehiclesHasMany {
@@ -128,6 +143,6 @@ extend type Mutation @guard {
         @can(ability: "vehicles.create")
     updateVehicle(id: ID!, input: UpdateVehicleInput! @spread): Vehicle!
         @update
-        @can(ability: "vehicles.edit")
+        @can(ability: "update", injectArgs: true)
     deleteVehicle(id: ID!): Vehicle @delete @can(ability: "vehicles.delete")
 }
