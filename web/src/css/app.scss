@@ -1,0 +1,40 @@
+// app global css in SCSS form
+
+@font-face {
+  font-family: Asap;
+  src: url(./fonts/Asap-VariableFont_wght.ttf);
+}
+
+body {
+  font-family: "Asap";
+}
+
+.q-icon {
+  line-height: 1.724em !important;
+}
+
+.on-right {
+  margin-left: 8px;
+}
+
+a.auth-link:link,
+a.auth-link:visited {
+  color: $green-7;
+}
+
+a.auth-link:hover,
+a.auth-link:active {
+  color: $green;
+}
+
+a.auth-link:active {
+  color: $green-4;
+}
+
+a.auth-link {
+  transition: all $generic-hover-transition;
+}
+
+.auth-button {
+  height: 56px;
+}
