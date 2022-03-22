@@ -27,19 +27,19 @@ class ResetPassword
         );
         switch ($status) {
             case "passwords.user":
-                $response = "There is no account with this email address.";
+                throw new GenericException("There is no account with this email address.");
                 break;
             case "passwords.throttled":
-                $response = "Too many attempts. Try again after some time.";
+                throw new GenericException("Too many attempts. Try again after some time.");
                 break;
             case "passwords.reset":
                 $response = "The new password has been set. Now you can use it to log in.";
                 break;
             case "passwords.token":
-                $response = "Reset password token is invalid. Generete a new reset password link.";
+                throw new GenericException("Reset password token is invalid. Generete a new reset password link.");
                 break;
             default:
-                throw new GenericException("Unexpected error occured during sending an email with password reset link");
+                throw new GenericException("Unexpected error occured during sending an email with password reset link.");
         }
         return $response;
     }
