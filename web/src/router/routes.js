@@ -1,3 +1,5 @@
+import { useProfileStore } from "../stores/profile.js";
+
 const routes = [
   {
     path: "/login",
@@ -19,6 +21,10 @@ const routes = [
     path: "/",
     component: () => import("layouts/MainLayout.vue"),
     children: [{ path: "", component: () => import("pages/IndexPage.vue") }],
+    beforeEnter: async () => {
+      const store = useProfileStore();
+      await store.fetchProfile();
+    },
   },
 
   {
