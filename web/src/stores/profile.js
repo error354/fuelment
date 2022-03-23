@@ -6,7 +6,16 @@ export const useProfileStore = defineStore("profile", {
     token: "",
     data: {},
   }),
-  getters: {},
+  getters: {
+    hasPermission: (state) => {
+      return (permissionName) => {
+        const result = state.data.permissions?.find(
+          (permission) => permission.name === permissionName
+        );
+        return !!result;
+      };
+    },
+  },
   actions: {
     async login(email, password) {
       const LoginMutation = `
@@ -79,6 +88,7 @@ export const useProfileStore = defineStore("profile", {
       return await apiClient
         .executeQuery({
           query: ProfileQuery,
+          cachePolicy: "network-only",
         })
         .then((response) => {
           if (response.error) {
