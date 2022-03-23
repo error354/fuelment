@@ -1,17 +1,30 @@
 <template>
-  <q-page class="flex flex-center">
-    <img
-      alt="Quasar logo"
-      src="~assets/quasar-logo-vertical.svg"
-      style="width: 200px; height: 200px"
-    >
+  <q-page padding>
+    <div class="row justify-center">
+      <div class="full-width row justify-start q-col-gutter-lg">
+        <div
+          class="col-11 col-md-3"
+          v-for="vehicle in vehicles"
+          :key="vehicle.id"
+        >
+          <q-table class="col-grow" :title="vehicle.name" />
+        </div>
+      </div>
+    </div>
   </q-page>
 </template>
 
 <script>
-import { defineComponent } from 'vue'
+import { defineComponent, ref, watch } from "vue";
+import { useProfileStore } from "../stores/profile.js";
 
 export default defineComponent({
-  name: 'IndexPage'
-})
+  name: "IndexPage",
+  setup() {
+    const profileStore = useProfileStore();
+    return {
+      vehicles: profileStore.getVehicles,
+    };
+  },
+});
 </script>

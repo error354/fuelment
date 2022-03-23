@@ -15,6 +15,9 @@ export const useProfileStore = defineStore("profile", {
         return !!result;
       };
     },
+    getVehicles: (state) => {
+      return state.data.vehicles;
+    },
   },
   actions: {
     async login(email, password) {
