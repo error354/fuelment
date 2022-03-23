@@ -36,7 +36,7 @@ export default route(function (/* { store, ssrContext } */) {
   });
 
   Router.beforeEach(async (to) => {
-    Loading.show();
+    Loading.show({ backgroundColor: "white" });
     const profileStore = useProfileStore();
     if (
       !profileStore.token &&
@@ -52,6 +52,9 @@ export default route(function (/* { store, ssrContext } */) {
     if (profileStore.token && !Object.keys(profileStore.data).length) {
       profileStore.fetchProfile();
     }
+  });
+
+  Router.afterEach(() => {
     Loading.hide();
   });
 
