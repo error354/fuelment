@@ -28,6 +28,6 @@ export default defineComponent({
 <style lang="scss">
 .q-item.q-router-link--active,
 .q-item--active {
-  color: "#fff";
+  color: #fff;
 }
 </style>
