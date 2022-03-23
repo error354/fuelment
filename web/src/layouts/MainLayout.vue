@@ -41,21 +41,34 @@
           dropdown-icon="mdi-cog-outline"
           content-class="no-border-radius"
           :label="$t('header.administration')"
+          v-if="hasAnyAdminViewPermission()"
         >
           <q-list>
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item
+              clickable
+              v-close-popup
+              v-if="hasPermission(adminViewPermissions.vehicles)"
+            >
               <q-item-section>
                 <q-item-label>{{ $t("header.vehicles") }}</q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item
+              clickable
+              v-close-popup
+              v-if="hasPermission(adminViewPermissions.users)"
+            >
               <q-item-section>
                 <q-item-label>{{ $t("header.users") }}</q-item-label>
               </q-item-section>
             </q-item>
 
-            <q-item clickable v-close-popup @click="onItemClick">
+            <q-item
+              clickable
+              v-close-popup
+              v-if="hasPermission(adminViewPermissions.roles)"
+            >
               <q-item-section>
                 <q-item-label>{{ $t("header.roles") }}</q-item-label>
               </q-item-section>
@@ -115,19 +128,22 @@
           <drawer-button
             icon="mdi-car-outline"
             :label="$t('header.vehicles')"
+            v-if="hasPermission(adminViewPermissions.vehicles)"
             to="/vehicles"
           />
           <drawer-button
             icon="mdi-account-multiple-outline"
             :label="$t('header.users')"
+            v-if="hasPermission(adminViewPermissions.users)"
             to="/users"
           />
           <drawer-button
             icon="mdi-shield-key-outline"
             :label="$t('header.roles')"
+            v-if="hasPermission(adminViewPermissions.roles)"
             to="/roles"
           />
-          <q-separator spaced dark />
+          <q-separator spaced dark v-if="hasAnyAdminViewPermission()" />
           <drawer-button
             icon="mdi-power"
             :label="$t('header.logout')"
@@ -171,7 +187,29 @@ export default defineComponent({
 
     const showDrawer = ref(false);
 
-    return { logout, logoutLoading, data, showDrawer };
+    const adminViewPermissions = ref({
+      vehicles: "vehicles.view",
+      users: "users.view",
+      roles: "roles.view",
+    });
+
+    function hasAnyAdminViewPermission() {
+      return (
+        profileStore.hasPermission(adminViewPermissions.value.vehicles) ||
+        profileStore.hasPermission(adminViewPermissions.value.users) ||
+        profileStore.hasPermission(adminViewPermissions.value.roles)
+      );
+    }
+
+    return {
+      logout,
+      logoutLoading,
+      data,
+      showDrawer,
+      hasPermission: profileStore.hasPermission,
+      adminViewPermissions,
+      hasAnyAdminViewPermission,
+    };
   },
 });
 </script>
