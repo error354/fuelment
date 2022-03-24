@@ -11,12 +11,12 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.0.0",
+    "@quasar/extras": "^1.13.3",
     "@vuelidate/validators": "^2.0.0-alpha.27",
     "graphql": "^16.3.0",
     "pinia": "^2.0.11",
     "pinia-plugin-persistedstate": "^1.5.1",
-    "quasar": "^2.6.0",
+    "quasar": "^2.6.1",
     "quasar-app-extension-vuelidate-rules": "^0.5.1",
     "villus": "^1.0.1",
     "vue": "^3.0.0",
@@ -25,7 +25,7 @@
   },
   "devDependencies": {
     "@intlify/vite-plugin-vue-i18n": "^3.3.1",
-    "@quasar/app-vite": "^1.0.0-alpha.0",
+    "@quasar/app-vite": "^1.0.0-beta.8",
     "autoprefixer": "^10.4.2",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "^8.1.0",
