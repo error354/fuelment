@@ -15,7 +15,7 @@ type Vehicle {
     fuel: VehicleFuel!
 
     "Users who have access to the vehicle"
-    users: [User] @belongsToMany
+    users: [User] @belongsToMany(type: PAGINATOR)
 
     "Creation date"
     createdAt: DateTime! @rename(attribute: "created_at")
@@ -51,7 +51,7 @@ type Vehicle {
         )
 
     "Fuelings of the vehicle"
-    fuelings: [Fueling] @hasMany
+    fuelings: [Fueling] @hasMany(type: PAGINATOR)
 
     "Vehicle's average fuel consumption"
     avgFuelConsumption: Float

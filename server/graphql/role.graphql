@@ -9,6 +9,9 @@ type Role @model(class: "Spatie\\Permission\\Models\\Role") {
     "Role's permissions"
     permissions: [Permission!]! @hasMany
 
+    "Users who have that role"
+    users: [User]! @belongsToMany(type: PAGINATOR)
+
     "When the role was created."
     createdAt: DateTime! @rename(attribute: "created_at")
 

@@ -16,13 +16,13 @@ type User {
     updatedAt: DateTime! @rename(attribute: "updated_at")
 
     "User's roles"
-    roles: [Role]! @belongsToMany
+    roles: [Role]! @belongsToMany(type: PAGINATOR)
 
     "User's permissions"
     permissions: [Permission]! @method(name: "getAllPermissions")
 
     "User's vehicles"
-    vehicles: [Vehicle]! @belongsToMany
+    vehicles: [Vehicle]! @belongsToMany(type: PAGINATOR)
 
     "Does the user have permission to add fuelings to the vehicle"
     canAdd: Boolean
