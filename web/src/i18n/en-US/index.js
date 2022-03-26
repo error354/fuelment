@@ -35,4 +35,23 @@ export default {
     users: "Users",
     roles: "Roles",
   },
+  fuelingsTable: {
+    amount: "Amount",
+    mileage: "Mileage",
+    full: "Full",
+    fuelConsumption: "Fuel consumption",
+    date: "Date",
+    price: "Price",
+    empty: "This vehicle has no fuelings yet",
+    avgFuelConsumption: "Average fuel consumption",
+    fuel: {
+      DIESEL: "Diesel",
+      PETROL: "Petrol",
+      LPG: "LPG",
+      CNG: "CNG",
+      HYDROGEN: "Hydrogen",
+      ELECTRICITY: "Electricity",
+      OTHER: "Other",
+    },
+  },
 };

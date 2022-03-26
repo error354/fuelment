@@ -16,7 +16,7 @@ export const useProfileStore = defineStore("profile", {
       };
     },
     getVehicles: (state) => {
-      return state.data.vehicles;
+      return state.data.vehicles.data;
     },
   },
   actions: {
@@ -78,12 +78,20 @@ export const useProfileStore = defineStore("profile", {
               name
             }
             vehicles {
-              id
-              name
-              canAdd
-              canEdit
-              canDelete
-              order
+              data {
+                id
+                name
+                fuel
+                avgFuelConsumption
+                canAdd
+                canEdit
+                canDelete
+                order
+              }
+              paginatorInfo {
+                currentPage
+                lastPage
+              }
             }
           }
         }
@@ -138,6 +146,34 @@ export const useProfileStore = defineStore("profile", {
             token: token,
             password: password,
           },
+        })
+        .then((response) => {
+          if (response.error) {
+            handleErrors(response.error);
+          }
+          return response;
+        });
+    },
+    async updateVehicleOrder(vehicleId, newOrder) {
+      const updateVehicleOrderMutation = `
+        mutation updateVehicleOrder ($userId: ID! $vehicleId: ID!, $newOrder: Int!) {
+          updateUser(
+            id: $userId
+            input: { vehicles: { connect: [{ id: $vehicleId, order: $newOrder }] } }
+          ) {
+            id
+          }
+        }
+      `;
+      const variables = {
+        userId: this.data.id,
+        vehicleId: vehicleId,
+        newOrder: newOrder,
+      };
+      return await apiClient
+        .executeMutation({
+          query: updateVehicleOrderMutation,
+          variables: variables,
         })
         .then((response) => {
           if (response.error) {

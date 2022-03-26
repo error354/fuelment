@@ -35,4 +35,23 @@ export default {
     users: "Użytkownicy",
     roles: "Role",
   },
+  fuelingsTable: {
+    amount: "Ilość",
+    mileage: "Przebieg",
+    full: "Do pełna",
+    fuelConsumption: "Spalanie",
+    date: "Data",
+    price: "Cena",
+    empty: "Ten pojazd nie ma jeszcze tankowań",
+    avgFuelConsumption: "Średnie spalanie",
+    fuel: {
+      DIESEL: "Diesel",
+      PETROL: "Benzyna",
+      LPG: "LPG",
+      CNG: "CNG",
+      HYDROGEN: "Wodór",
+      ELECTRICITY: "Energia elektryczna",
+      OTHER: "Inne",
+    },
+  },
 };

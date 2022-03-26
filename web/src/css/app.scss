@@ -38,3 +38,19 @@ a.auth-link {
 .auth-button {
   height: 56px;
 }
+
+.cursor-grab {
+  cursor: grab;
+}
+
+.cursor-grab:active {
+  cursor: grabbing;
+}
+
+.cursor-default {
+  cursor: default;
+}
+
+.q-page {
+  background-color: $grey-2;
+}
