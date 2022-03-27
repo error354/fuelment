@@ -49,8 +49,8 @@ export default route(function (/* { store, ssrContext } */) {
       Loading.hide();
       return { path: "/login" };
     }
-    if (profileStore.token && !Object.keys(profileStore.data).length) {
-      profileStore.fetchProfile();
+    if (profileStore.token && !profileStore.email) {
+      await profileStore.fetchProfile();
     }
   });
 

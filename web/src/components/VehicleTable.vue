@@ -7,6 +7,7 @@
     :loading="loadingFuelings"
     :columns="columns"
     :rows="fuelings"
+    :visible-columns="visibleColumns"
     :no-data-label="$t('fuelingsTable.empty')"
     v-model:pagination="paginationProps.pagination"
     rows-per-page-options="5"
@@ -32,19 +33,56 @@
         </div>
         <span class="text-h6">{{ vehicle.name }}</span>
         <q-space />
-        {{
-          vehicle.avgFuelConsumption
-            ? `${$t("fuelingsTable.avgFuelConsumption")}: ${
-                vehicle.avgFuelConsumption
-              }`
-            : null
-        }}
-        <q-icon name="mdi-menu" size="sm" class="q-ml-md" />
+        <q-btn
+          round
+          flat
+          color="secondary"
+          icon="add"
+          size="md"
+          class="q-mr-sm"
+          v-if="vehicle.canAdd"
+        >
+          <q-tooltip self="center middle">{{
+            $t("fuelingsTable.add")
+          }}</q-tooltip>
+        </q-btn>
+        <span class="q-mr-sm" v-if="vehicle.avgFuelConsumption">
+          {{
+            `${$t("fuelingsTable.avgFuelConsumption")}: ${
+              vehicle.avgFuelConsumption
+            }`
+          }}
+        </span>
+        <q-btn round flat color="primary" icon="mdi-menu" size="md" />
       </div>
     </template>
     <template v-slot:body-cell-full="props">
       <q-td :props="props">
         <q-icon :name="props.value ? 'mdi-check' : 'mdi-close'"></q-icon>
+      </q-td>
+    </template>
+    <template v-slot:body-cell-actions>
+      <q-td :props="props" class="row justify-center content-center">
+        <q-btn
+          round
+          flat
+          color="primary"
+          icon="mdi-pencil"
+          size="xs"
+          v-if="vehicle.canEdit"
+        >
+          <q-tooltip>{{ $t("fuelingsTable.edit") }}</q-tooltip>
+        </q-btn>
+        <q-btn
+          round
+          flat
+          color="primary"
+          icon="mdi-delete"
+          size="xs"
+          v-if="vehicle.canDelete"
+        >
+          <q-tooltip>{{ $t("fuelingsTable.delete") }}</q-tooltip>
+        </q-btn>
       </q-td>
     </template>
     <template v-slot:loading>
@@ -92,17 +130,53 @@ export default defineComponent({
     }
 
     const columns = ref([
-      { name: "date", label: $t("fuelingsTable.date"), field: "date" },
-      { name: "mileage", label: $t("fuelingsTable.mileage"), field: "mileage" },
-      { name: "amount", label: $t("fuelingsTable.amount"), field: "amount" },
-      { name: "full", label: $t("fuelingsTable.full"), field: "full" },
+      {
+        name: "date",
+        label: $t("fuelingsTable.date"),
+        field: "date",
+        required: true,
+      },
+      {
+        name: "mileage",
+        label: $t("fuelingsTable.mileage"),
+        field: "mileage",
+        required: true,
+      },
+      {
+        name: "amount",
+        label: $t("fuelingsTable.amount"),
+        field: "amount",
+        required: true,
+      },
+      {
+        name: "full",
+        label: $t("fuelingsTable.full"),
+        field: "full",
+        required: true,
+        align: "center",
+      },
       {
         name: "fuelConsumption",
         label: $t("fuelingsTable.fuelConsumption"),
         field: "fuelConsumption",
+        required: true,
       },
-      { name: "price", label: $t("fuelingsTable.price"), field: "price" },
+      {
+        name: "price",
+        label: $t("fuelingsTable.price"),
+        field: "price",
+        required: true,
+      },
+      { name: "actions", label: "Akcje", align: "center" },
     ]);
+
+    const showActionsColumn = ref(
+      props.vehicle.canEdit || props.vehicle.canDelete
+    );
+    const visibleColumns = ref([]);
+    if (showActionsColumn.value) {
+      visibleColumns.value.push("actions");
+    }
 
     const getFuelingsQuery = `
       query getFuelings ($vehicleId: ID! $page: Int, $first: Int) {
@@ -173,6 +247,7 @@ export default defineComponent({
       color,
       paginationProps,
       getFuelings,
+      visibleColumns,
     };
   },
 });
@@ -180,7 +255,11 @@ export default defineComponent({
 
 <style>
 .fuelings-table {
-  height: 396px;
+  height: 406px;
   border: 1px solid rgba(0, 0, 0, 0.12);
+}
+
+.q-table__top {
+  padding-right: 8px;
 }
 </style>

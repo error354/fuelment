@@ -82,7 +82,7 @@
           icon-right="mdi-account-outline"
           :label="$t('header.settings')"
         >
-          <q-tooltip> {{ data.email }} </q-tooltip>
+          <q-tooltip> {{ email }} </q-tooltip>
         </q-btn>
         <q-btn
           class="gt-sm"
@@ -105,7 +105,7 @@
     >
       <q-scroll-area class="fit">
         <div class="text-center full-width q-my-md">
-          {{ data.email }}
+          {{ email }}
         </div>
         <q-separator spaced dark />
         <q-list class="text-uppercase">
@@ -173,7 +173,7 @@ export default defineComponent({
   setup() {
     const router = useRouter();
     const profileStore = useProfileStore();
-    const { data } = storeToRefs(profileStore);
+    const { email } = storeToRefs(profileStore);
 
     const logoutLoading = ref(false);
     async function logout() {
@@ -204,7 +204,7 @@ export default defineComponent({
     return {
       logout,
       logoutLoading,
-      data,
+      email,
       showDrawer,
       hasPermission: profileStore.hasPermission,
       adminViewPermissions,

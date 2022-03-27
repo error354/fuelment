@@ -51,7 +51,11 @@ export default {
       CNG: "CNG",
       HYDROGEN: "Hydrogen",
       ELECTRICITY: "Electricity",
-      OTHER: "Other",
+      OTHER: "Other fuel",
     },
+    add: "Add fueling",
+    edit: "Edit",
+    delete: "Delete",
   },
+  noVehicles: "You have no vehicles yet",
 };

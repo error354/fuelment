@@ -24,6 +24,9 @@ type User {
     "User's vehicles"
     vehicles: [Vehicle]! @belongsToMany(type: PAGINATOR)
 
+    "How many vehicles can the user see"
+    vehiclesCount: Int! @count(relation: "vehicles")
+
     "Does the user have permission to add fuelings to the vehicle"
     canAdd: Boolean
         @field(

@@ -51,7 +51,11 @@ export default {
       CNG: "CNG",
       HYDROGEN: "Wodór",
       ELECTRICITY: "Energia elektryczna",
-      OTHER: "Inne",
+      OTHER: "Inne paliwo",
     },
+    add: "Dodaj tankowanie",
+    edit: "Edytuj",
+    delete: "Usuń",
   },
+  noVehicles: "Nie masz jeszcze żadnych pojazdów",
 };

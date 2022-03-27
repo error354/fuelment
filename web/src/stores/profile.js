@@ -4,19 +4,23 @@ import { apiClient, handleErrors, setAuthToken } from "src/boot/apiClient";
 export const useProfileStore = defineStore("profile", {
   state: () => ({
     token: "",
-    data: {},
+    id: null,
+    email: "",
+    vehiclesCount: null,
+    permissions: [],
+    vehicles: [],
   }),
   getters: {
     hasPermission: (state) => {
       return (permissionName) => {
-        const result = state.data.permissions?.find(
+        const result = state.permissions?.find(
           (permission) => permission.name === permissionName
         );
         return !!result;
       };
     },
     getVehicles: (state) => {
-      return state.data.vehicles.data;
+      return state.vehicles.data;
     },
   },
   actions: {
@@ -73,10 +77,35 @@ export const useProfileStore = defineStore("profile", {
           me {
             id
             email
+            vehiclesCount
             permissions {
               id
               name
             }
+          }
+        }
+      `;
+      return await apiClient
+        .executeQuery({
+          query: ProfileQuery,
+          cachePolicy: "network-only",
+        })
+        .then((response) => {
+          if (response.error) {
+            handleErrors(response.error);
+          } else {
+            this.id = response.data.me.id;
+            this.email = response.data.me.email;
+            this.permissions = response.data.me.permissions;
+            this.vehiclesCount = response.data.me.vehiclesCount;
+            return response;
+          }
+        });
+    },
+    async fetchVehicles() {
+      const VehiclesQuery = `
+        query {
+          me {
             vehicles {
               data {
                 id
@@ -98,14 +127,14 @@ export const useProfileStore = defineStore("profile", {
       `;
       return await apiClient
         .executeQuery({
-          query: ProfileQuery,
+          query: VehiclesQuery,
           cachePolicy: "network-only",
         })
         .then((response) => {
           if (response.error) {
             handleErrors(response.error);
           } else {
-            this.data = response.data.me;
+            this.vehicles = response.data.me.vehicles;
             return response;
           }
         });

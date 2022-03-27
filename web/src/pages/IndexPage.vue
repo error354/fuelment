@@ -36,8 +36,9 @@ import VehicleTable from "src/components/VehicleTable.vue";
 export default defineComponent({
   name: "IndexPage",
   components: { draggable, VehicleTable },
-  setup() {
+  async setup() {
     const profileStore = useProfileStore();
+    await profileStore.fetchVehicles();
     const vehicles = ref(profileStore.getVehicles);
 
     const drag = ref(false);
