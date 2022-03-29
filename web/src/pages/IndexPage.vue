@@ -6,7 +6,6 @@
         class="list-group full-width row justify-start q-col-gutter-lg"
         item-key="order"
         handle=".handle"
-        @change="changeOrder"
         tag="transition-group"
         :component-data="{
           tag: 'div',
@@ -16,6 +15,7 @@
         v-bind="dragOptions"
         @start="drag = true"
         @end="drag = false"
+        @change="changeOrder"
       >
         <template #item="{ element }">
           <div class="col-12 col-md-6 col-lg-4 col-xl-3">

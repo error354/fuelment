@@ -195,7 +195,7 @@ export const useProfileStore = defineStore("profile", {
         }
       `;
       const variables = {
-        userId: this.data.id,
+        userId: this.id,
         vehicleId: vehicleId,
         newOrder: newOrder,
       };
