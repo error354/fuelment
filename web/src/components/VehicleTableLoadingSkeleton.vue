@@ -24,49 +24,58 @@
             class="q-mr-sm"
           />
         </div>
-        <div class="relative-position row items-center full-width q-pt-lg">
-          <q-skeleton
-            square
-            animation="blink"
-            type="text"
-            style="width: 50px"
-          />
-          <q-space />
-          <q-skeleton
-            square
-            animation="blink"
-            type="text"
-            style="width: 50px"
-          />
-          <q-space />
-          <q-skeleton
-            square
-            animation="blink"
-            type="text"
-            style="width: 50px"
-          />
-          <q-space />
-          <q-skeleton
-            square
-            animation="blink"
-            type="text"
-            style="width: 50px"
-          />
-          <q-space />
-          <q-skeleton
-            square
-            animation="blink"
-            type="text"
-            style="width: 50px"
-          />
-          <q-space />
-          <q-skeleton
-            square
-            animation="blink"
-            type="text"
-            style="width: 50px"
-          />
-        </div>
+      </template>
+      <template #header>
+        <q-tr>
+          <q-th>
+            <q-skeleton
+              square
+              animation="blink"
+              type="text"
+              style="width: 50px"
+            />
+          </q-th>
+          <q-th>
+            <q-skeleton
+              square
+              animation="blink"
+              type="text"
+              style="width: 50px"
+            />
+          </q-th>
+          <q-th>
+            <q-skeleton
+              square
+              animation="blink"
+              type="text"
+              style="width: 50px"
+            />
+          </q-th>
+          <q-th>
+            <q-skeleton
+              square
+              animation="blink"
+              type="text"
+              style="width: 50px"
+            />
+          </q-th>
+          <q-th>
+            <q-skeleton
+              square
+              animation="blink"
+              type="text"
+              style="width: 50px"
+            />
+          </q-th>
+          <q-th>
+            <q-skeleton
+              square
+              animation="blink"
+              type="text"
+              style="width: 50px"
+            />
+          </q-th>
+        </q-tr>
       </template>
       <template #body>
         <q-tr>

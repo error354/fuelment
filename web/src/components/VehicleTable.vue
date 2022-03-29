@@ -85,9 +85,6 @@
         </q-btn>
       </q-td>
     </template>
-    <template v-slot:loading>
-      <q-inner-loading showing color="secondary" />
-    </template>
   </q-table>
 </template>
 
