@@ -42,8 +42,8 @@ export default route(function (/* { store, ssrContext } */) {
       !profileStore.token &&
       !(
         to.path === "/login" ||
-        to.path !== "/forgot-password" ||
-        to.path !== "/reset-password"
+        to.path === "/forgot-password" ||
+        to.path === "/reset-password"
       )
     ) {
       Loading.hide();
