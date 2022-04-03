@@ -10,7 +10,7 @@
               <q-img
                 no-spinner
                 no-native-menu
-                src="src/assets/logo_with_background.svg"
+                src="../assets/logo_with_background.svg"
                 class="full-width"
               />
             </div>
