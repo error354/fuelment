@@ -41,7 +41,8 @@ export default {
     full: "Full",
     fuelConsumption: "Fuel consumption",
     date: "Date",
-    price: "Price",
+    price: "Price per liter",
+    totalPrice: "Total price",
     empty: "This vehicle has no fuelings yet",
     avgFuelConsumption: "Average fuel consumption",
     fuel: {
@@ -56,6 +57,8 @@ export default {
     add: "Add fueling",
     edit: "Edit",
     delete: "Delete",
+    noVehicles: "You have no vehicles yet",
+    addingDialogTitle: "Adding fueling",
+    editingDialogTitle: "Editing fueling",
   },
-  noVehicles: "You have no vehicles yet",
 };

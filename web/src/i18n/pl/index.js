@@ -41,7 +41,8 @@ export default {
     full: "Do pełna",
     fuelConsumption: "Spalanie",
     date: "Data",
-    price: "Cena",
+    price: "Cena za litr",
+    totalPrice: "Cena całkowita",
     empty: "Ten pojazd nie ma jeszcze tankowań",
     avgFuelConsumption: "Średnie spalanie",
     fuel: {
@@ -56,6 +57,10 @@ export default {
     add: "Dodaj tankowanie",
     edit: "Edytuj",
     delete: "Usuń",
+    noVehicles: "Nie masz jeszcze żadnych pojazdów",
+    addingDialogTitle: "Dodawanie tankowania",
+    editingDialogTitle: "Edycja tankowania",
+    save: "Zapisz",
+    cancel: "Anuluj",
   },
-  noVehicles: "Nie masz jeszcze żadnych pojazdów",
 };

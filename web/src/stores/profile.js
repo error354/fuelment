@@ -112,6 +112,7 @@ export const useProfileStore = defineStore("profile", {
                 name
                 fuel
                 avgFuelConsumption
+                priceSetting
                 canAdd
                 canEdit
                 canDelete

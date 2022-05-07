@@ -18,7 +18,7 @@
         @change="changeOrder"
       >
         <template #item="{ element }">
-          <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+          <div class="col-12 col-lg-6 col-xl-4">
             <VehicleTable :vehicle="element" />
           </div>
         </template>

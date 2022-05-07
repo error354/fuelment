@@ -4,12 +4,10 @@
     v-if="!skeletonsNumber"
   >
     <q-icon name="mdi-gauge-empty" size="120px" />
-    <span class="text-h5">{{ $t("noVehicles") }}</span>
+    <span class="text-h5">{{ $t("fuelingsTable.noVehicles") }}</span>
   </q-page>
   <Suspense v-else>
-    <!-- component with nested async dependencies -->
     <IndexPage />
-    <!-- loading state via #fallback slot -->
     <template #fallback>
       <q-page>
         <div class="row justify-center q-pr-lg q-py-lg">

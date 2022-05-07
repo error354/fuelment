@@ -93,16 +93,16 @@ extend type Query {
 
 input CreateVehicleInput {
     name: String!
-    priceSetting: VehicleSettings
-    photoSetting: VehicleSettings
+    priceSetting: VehicleSettings @rename(attribute: "price_setting")
+    photoSetting: VehicleSettings @rename(attribute: "photo_setting")
     fuel: VehicleFuel!
     users: CreateVehiclesHasMany
 }
 
 input UpdateVehicleInput {
     name: String
-    priceSetting: VehicleSettings
-    photoSetting: VehicleSettings
+    priceSetting: VehicleSettings @rename(attribute: "price_setting")
+    photoSetting: VehicleSettings @rename(attribute: "photo_setting")
     fuel: VehicleFuel
     users: UpdateVehiclesHasMany
     fuelings: UpdateVehicleFuelingHasMany

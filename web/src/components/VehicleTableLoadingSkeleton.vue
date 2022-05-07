@@ -1,5 +1,5 @@
 <template>
-  <div class="col-12 col-md-6 col-lg-4 col-xl-3">
+  <div class="col-12 col-lg-6 col-xl-4">
     <q-table square flat class="col-grow fuelings-table">
       <template #top>
         <div class="relative-position row items-center full-width q-pt-sm">
@@ -27,6 +27,14 @@
       </template>
       <template #header>
         <q-tr>
+          <q-th>
+            <q-skeleton
+              square
+              animation="blink"
+              type="text"
+              style="width: 50px"
+            />
+          </q-th>
           <q-th>
             <q-skeleton
               square
