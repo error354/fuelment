@@ -35,7 +35,7 @@ class CreateFuelingInputValidator extends Validator
 
         $new_date = $this->arg('date');
         $date_now = date("Y-m-d");
-        if ($date_now < $new_date) {
+        if ($new_date && ($date_now < $new_date)) {
             throw ValidationException::withMessages(["Fueling's date cannot be in future."]);
         }
         $new_mileage = $this->arg('mileage');
@@ -44,8 +44,8 @@ class CreateFuelingInputValidator extends Validator
         $next_date = null;
         $next_mileage = null;
 
-        $prev_fueling = Fueling::getFuelingBefore($new_date, $vehicle_id);
-        $next_fueling = Fueling::getFuelingAfter($new_date, $vehicle_id);
+        $prev_fueling = Fueling::getFuelingBefore($new_mileage, $vehicle_id);
+        $next_fueling = Fueling::getFuelingAfter($new_mileage, $vehicle_id);
 
         if ($prev_fueling) {
             $prev_date = $prev_fueling->date;
@@ -55,7 +55,9 @@ class CreateFuelingInputValidator extends Validator
             }
         } else {
             $prev_fueling = -1;
-            $prev_date = $new_date->copy()->subDay();
+            if ($new_date) {
+                $prev_date = $new_date->copy()->subDay();
+            }
         }
         if ($next_fueling) {
             $next_date = $next_fueling->date;
@@ -65,7 +67,9 @@ class CreateFuelingInputValidator extends Validator
             }
         } else {
             $next_mileage = $new_mileage + 1;
-            $next_date = $new_date->copy()->addDay();
+            if ($new_date) {
+                $next_date = $new_date->copy()->addDay();
+            }
         }
 
         return [

@@ -33,44 +33,44 @@ class Fueling extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function getPrevFueling($date)
+    public function getPrevFueling($mileage)
     {
         return Fueling::where('vehicle_id', $this->vehicle_id)
             ->where('id', '<>', $this->id)
-            ->where('date', '<', $date)
-            ->orderBy('date', 'desc')
+            ->where('mileage', '<', $mileage)
+            ->orderBy('mileage', 'desc')
             ->first();
     }
 
-    public function getNextFueling($date)
+    public function getNextFueling($mileage)
     {
         return Fueling::where('vehicle_id', $this->vehicle_id)
             ->where('id', '<>', $this->id)
-            ->where('date', '>', $date)
-            ->orderBy('date', 'asc')
+            ->where('mileage', '>', $mileage)
+            ->orderBy('mileage', 'asc')
             ->first();
     }
 
-    public static function getFuelingBefore($date, $vehicle_id)
+    public static function getFuelingBefore($mileage, $vehicle_id)
     {
         return Fueling::where('vehicle_id', $vehicle_id)
-            ->where('date', '<', $date)
-            ->orderBy('date', 'desc')
+            ->where('mileage', '<', $mileage)
+            ->orderBy('mileage', 'desc')
             ->first();
     }
 
-    public static function getFuelingAfter($date, $vehicle_id)
+    public static function getFuelingAfter($mileage, $vehicle_id)
     {
         return Fueling::where('vehicle_id', $vehicle_id)
-            ->where('date', '>', $date)
-            ->orderBy('date', 'asc')
+            ->where('mileage', '>', $mileage)
+            ->orderBy('mileage', 'asc')
             ->first();
     }
 
     public function calculateFuelConsumption($calculate_next = true, $save = false)
     {
         if ($this->full) {
-            $prev_fueling = $this->getPrevFueling($this->date);
+            $prev_fueling = $this->getPrevFueling($this->mileage);
             if ($prev_fueling && $prev_fueling->full) {
                 $mileage_difference = $this->mileage - $prev_fueling->mileage;
                 $fuel_consumption = $this->amount / $mileage_difference * 100;
@@ -80,7 +80,7 @@ class Fueling extends Model
                 }
             }
             if ($calculate_next) {
-                $next_fueling = $this->getNextFueling($this->date);
+                $next_fueling = $this->getNextFueling($this->mileage);
                 if ($next_fueling && $next_fueling->full) {
                     $mileage_difference = $next_fueling->mileage - $this->mileage;
                     $fuel_consumption = $next_fueling->amount / $mileage_difference * 100;
@@ -97,7 +97,7 @@ class Fueling extends Model
         parent::boot();
 
         static::addGlobalScope('order', function (Builder $builder) {
-            $builder->orderBy('date', 'desc');
+            $builder->orderBy('mileage', 'desc');
         });
 
         static::creating(function ($fueling) {
@@ -109,7 +109,7 @@ class Fueling extends Model
         });
 
         static::deleted(function ($fueling) {
-            $next_fueling = $fueling->getNextFueling($fueling->date);
+            $next_fueling = $fueling->getNextFueling($fueling->mileage);
             if ($next_fueling) {
                 $next_fueling->calculateFuelConsumption(false, true);
             }

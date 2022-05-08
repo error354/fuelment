@@ -18,7 +18,7 @@ type Fueling {
     fuelConsumption: Float @rename(attribute: "fuel_consumption")
 
     "Date of fueling"
-    date: Date!
+    date: Date
 
     "Fuel's price for one unit"
     price: Float
@@ -34,7 +34,7 @@ input CreateFuelingInput @validator {
     amount: Float!
     mileage: Float!
     full: Boolean!
-    date: Date!
+    date: Date
     price: Float
 }
 
