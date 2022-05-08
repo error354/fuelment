@@ -62,5 +62,6 @@ export default {
     editingDialogTitle: "Edycja tankowania",
     save: "Zapisz",
     cancel: "Anuluj",
+    details: "Szczegóły",
   },
 };

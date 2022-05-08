@@ -22,7 +22,7 @@
         <div>
           <q-icon
             name="mdi-circle-medium"
-            class="handle cursor-default"
+            class="cursor-default"
             size="md"
             :color="color"
           >
@@ -33,22 +33,6 @@
         </div>
         <span class="text-h6">{{ vehicle.name }}</span>
         <q-space />
-        <q-btn
-          round
-          flat
-          color="secondary"
-          icon="add"
-          size="md"
-          class="q-mr-sm"
-          v-if="vehicle.canAdd"
-          @click="
-            showAddFuelingDialog(vehicle.name, showPrice(vehicle.priceSetting))
-          "
-        >
-          <q-tooltip self="center middle">{{
-            $t("fuelingsTable.add")
-          }}</q-tooltip>
-        </q-btn>
         <span class="q-mr-sm" v-if="vehicle.avgFuelConsumption">
           {{
             `${$t("fuelingsTable.avgFuelConsumption")}: ${
@@ -59,11 +43,23 @@
         <q-btn
           round
           flat
-          color="primary"
-          icon="mdi-menu"
+          color="secondary"
+          icon="add"
           size="md"
-          @click="loadingFuelings = !loadingFuelings"
-        />
+          v-if="vehicle.canAdd"
+          @click="
+            showAddFuelingDialog(vehicle.name, showPrice(vehicle.priceSetting))
+          "
+        >
+          <q-tooltip self="center middle">{{
+            $t("fuelingsTable.add")
+          }}</q-tooltip>
+        </q-btn>
+        <q-btn round flat color="primary" icon="read_more" size="md">
+          <q-tooltip self="center middle">{{
+            $t("fuelingsTable.details")
+          }}</q-tooltip>
+        </q-btn>
       </div>
     </template>
     <template v-slot:body-cell-full="props">
@@ -364,6 +360,6 @@ export default defineComponent({
 }
 
 .q-table__top {
-  padding-right: 8px;
+  padding-right: 16px;
 }
 </style>

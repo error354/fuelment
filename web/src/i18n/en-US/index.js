@@ -60,5 +60,6 @@ export default {
     noVehicles: "You have no vehicles yet",
     addingDialogTitle: "Adding fueling",
     editingDialogTitle: "Editing fueling",
+    details: "Details",
   },
 };
