@@ -67,9 +67,9 @@
         <q-icon :name="props.value ? 'mdi-check' : 'mdi-close'"></q-icon>
       </q-td>
     </template>
-    <template v-slot:body-cell-totalPrice="props">
+    <template v-slot:body-cell-pricePerLiter="props">
       <q-td :props="props">
-        {{ totalPrice(props.row.price, props.row.amount) }}
+        {{ pricePerLiter(props.row.price, props.row.amount) }}
       </q-td>
     </template>
     <template v-slot:body-cell-actions="props">
@@ -252,8 +252,8 @@ export default defineComponent({
         required: true,
       },
       {
-        name: "totalPrice",
-        label: $t("fuelingsTable.totalPrice"),
+        name: "pricePerLiter",
+        label: $t("fuelingsTable.pricePerLiter"),
       },
       { name: "actions", label: "Akcje", align: "center" },
     ]);
@@ -261,13 +261,13 @@ export default defineComponent({
     const showActionsColumn = ref(
       props.vehicle.canEdit || props.vehicle.canDelete
     );
-    const visibleColumns = ref(["totalPrice"]);
+    const visibleColumns = ref(["pricePerLiter"]);
     if (showActionsColumn.value) {
       visibleColumns.value.push("actions");
     }
 
-    const totalPrice = (price, amount) => {
-      let result = (price * amount).toFixed(2);
+    const pricePerLiter = (price, amount) => {
+      let result = (price / amount).toFixed(2);
       if (result == 0) {
         result = null;
       }
@@ -346,7 +346,7 @@ export default defineComponent({
       visibleColumns,
       showAddFuelingDialog,
       showEditFuelingDialog,
-      totalPrice,
+      pricePerLiter,
       showPrice,
     };
   },

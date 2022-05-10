@@ -28,7 +28,7 @@
           :label="$t('fuelingsTable.amount')"
         />
         <q-input
-          v-model="pricePerLiter"
+          v-model="totalPrice"
           class="q-mb-sm"
           square
           filled
@@ -36,11 +36,11 @@
           v-if="showPrice"
         />
         <q-input
-          v-model="totalPrice"
+          v-model="pricePerLiter"
           class="q-mb-sm"
           square
           filled
-          :label="$t('fuelingsTable.totalPrice')"
+          :label="$t('fuelingsTable.pricePerLiter')"
           v-if="showPrice"
         />
         <q-checkbox v-model="newFull" :label="$t('fuelingsTable.full')" />
@@ -96,11 +96,11 @@ export default {
     //                    example: onDialogOK({ /*.../* }) - with payload
     // onDialogCancel - Function to call to settle dialog with "cancel" outcome
 
-    const calcTotalPrice = (pricePerLiter, amount) => {
+    const calcPricePerLiter = (pricePerLiter, amount) => {
       if (!pricePerLiter || !amount) {
         return null;
       }
-      return (pricePerLiter * amount).toFixed(2);
+      return (pricePerLiter / amount).toFixed(2);
     };
 
     const newDate = ref(props.date);
@@ -108,25 +108,27 @@ export default {
     const newAmount = ref(props.amount);
     const newFull = ref(props.full);
     const newPrice = ref(props.price);
-    const newTotalPrice = ref(calcTotalPrice(newPrice.value, newAmount.value));
+    const newPricePerLiter = ref(
+      calcPricePerLiter(newPrice.value, newAmount.value)
+    );
 
-    const pricePerLiter = computed({
+    const totalPrice = computed({
       get() {
         return newPrice.value;
       },
       set(newValue) {
         newPrice.value = newValue;
-        newTotalPrice.value = (newPrice.value * newAmount.value).toFixed(2);
+        newPricePerLiter.value = (newPrice.value / newAmount.value).toFixed(2);
       },
     });
 
-    const totalPrice = computed({
+    const pricePerLiter = computed({
       get() {
-        return newTotalPrice.value;
+        return newPricePerLiter.value;
       },
       set(newValue) {
-        newTotalPrice.value = newValue;
-        newPrice.value = (newTotalPrice.value / newAmount.value).toFixed(2);
+        newPricePerLiter.value = newValue;
+        newPrice.value = (newPricePerLiter.value * newAmount.value).toFixed(2);
       },
     });
 

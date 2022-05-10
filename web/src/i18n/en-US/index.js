@@ -41,8 +41,8 @@ export default {
     full: "Full",
     fuelConsumption: "Fuel consumption",
     date: "Date",
-    price: "Price per liter",
-    totalPrice: "Total price",
+    price: "Total price",
+    pricePerLiter: "Price per liter",
     empty: "This vehicle has no fuelings yet",
     avgFuelConsumption: "Average fuel consumption",
     fuel: {

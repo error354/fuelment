@@ -41,8 +41,8 @@ export default {
     full: "Do pełna",
     fuelConsumption: "Spalanie",
     date: "Data",
-    price: "Cena za litr",
-    totalPrice: "Cena całkowita",
+    price: "Cena całkowita",
+    pricePerLiter: "Cena za litr",
     empty: "Ten pojazd nie ma jeszcze tankowań",
     avgFuelConsumption: "Średnie spalanie",
     fuel: {
