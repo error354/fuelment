@@ -15,7 +15,8 @@ type Fueling {
     full: Boolean!
 
     "Combustion since the previous refueling"
-    fuelConsumption: Float @field(resolver: "App\\Models\\Fueling@getFuelConsumption")
+    fuelConsumption: Float
+        @field(resolver: "App\\Models\\Fueling@getFuelConsumption")
 
     "Date of fueling"
     date: Date
@@ -27,7 +28,8 @@ type Fueling {
     route: Route
 
     "Is the fueling the last one of it's route"
-    isLastOfRoute: Boolean @field(resolver: "App\\Models\\Fueling@isLastOfRoute")
+    isLastOfRoute: Boolean
+        @field(resolver: "App\\Models\\Fueling@isLastOfRoute")
 }
 
 extend type Query {
