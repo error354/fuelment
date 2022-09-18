@@ -18,6 +18,10 @@ type Fueling {
     fuelConsumption: Float
         @field(resolver: "App\\Models\\Fueling@getFuelConsumption")
 
+    "Cost of driving one kilometer of this fueling"
+    kilometerCost: Float
+        @field(resolver: "App\\Models\\Fueling@getKilometerCost")
+
     "Date of fueling"
     date: Date
 

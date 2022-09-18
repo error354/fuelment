@@ -111,6 +111,6 @@ class Route extends Model
         if (!$distance) {
             return null;
         }
-        return round(($totalCost / $distance * 100), 2);
+        return round(($totalCost / $distance), 2);
     }
 }

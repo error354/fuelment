@@ -59,6 +59,18 @@ class Fueling extends Model
         return null;
     }
 
+    public function getKilometerCost($fueling = null)
+    {
+        $fueling ??= $this;
+        $prev_fueling = $fueling->getPrevFueling();
+        if ($prev_fueling?->full) {
+            $mileage_difference = $fueling->mileage - $prev_fueling->mileage;
+            $cost = round($fueling->price / $mileage_difference, 2);
+            return $cost;
+        }
+        return null;
+    }
+
     public function getPrevFueling($mileage = null)
     {
         $mileage ??= $this->mileage;
