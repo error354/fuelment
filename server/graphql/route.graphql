@@ -1,0 +1,41 @@
+type Route {
+    "Unique primary key."
+    id: ID!
+
+    "Average fuel consumption on the route"
+    avgFuelConsumption: Float
+        @field(resolver: "App\\Models\\Route@getAverageFuelConsumption")
+
+    "Distance of the route"
+    distance: Float @field(resolver: "App\\Models\\Route@getDistance")
+
+    "Average cost of driving one kilometer on the route"
+    kilometerCost: Float @field(resolver: "App\\Models\\Route@getKilometerCost")
+
+    "Vehicle that did that route"
+    vehicle: Vehicle!
+
+    "Fuelings that was made during the route"
+    fuelings: [Fueling] @hasMany(type: PAGINATOR)
+}
+
+extend type Query {
+    route(id: ID @eq): Route @find
+    routes(
+        orderBy: _
+            @orderBy(
+                columns: [
+                    "id"
+                    "avgFuelConsumption"
+                    "distance"
+                    "kilometerCost"
+                ]
+            )
+    ): [Route!]! @paginate(defaultCount: 30, maxCount: 50)
+}
+
+extend type Mutation {
+    createRoute(firstFuelingId: ID!): Route
+        @field(resolver: "RouteMutator@create")
+    deleteRoute(id: ID!): Route @delete
+}

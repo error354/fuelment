@@ -15,13 +15,19 @@ type Fueling {
     full: Boolean!
 
     "Combustion since the previous refueling"
-    fuelConsumption: Float @rename(attribute: "fuel_consumption")
+    fuelConsumption: Float @field(resolver: "App\\Models\\Fueling@getFuelConsumption")
 
     "Date of fueling"
     date: Date
 
     "Fuel's price for one unit"
     price: Float
+
+    "Route during which refueling was done"
+    route: Route
+
+    "Is the fueling the last one of it's route"
+    isLastOfRoute: Boolean @field(resolver: "App\\Models\\Fueling@isLastOfRoute")
 }
 
 extend type Query {
@@ -36,6 +42,7 @@ input CreateFuelingInput @validator {
     full: Boolean!
     date: Date
     price: Float
+    newRoute: Boolean @drop
 }
 
 input UpdateFuelingInput @validator {

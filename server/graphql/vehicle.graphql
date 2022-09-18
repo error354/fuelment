@@ -53,12 +53,12 @@ type Vehicle {
     "Fuelings of the vehicle"
     fuelings: [Fueling] @hasMany(type: PAGINATOR)
 
+    "Routes of the vehicle"
+    routes: [Fueling] @hasMany(type: PAGINATOR)
+
     "Vehicle's average fuel consumption"
     avgFuelConsumption: Float
-        @field(
-            resolver: "App\\Models\\Vehicle@getAverageFuelConsumption"
-        )
-
+        @field(resolver: "App\\Models\\Vehicle@getAverageFuelConsumption")
 }
 
 enum VehicleSettings {

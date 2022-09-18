@@ -10,3 +10,4 @@ scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 #import role.graphql
 #import vehicle.graphql
 #import fueling.graphql
+#import route.graphql

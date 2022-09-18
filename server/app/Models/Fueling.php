@@ -33,8 +33,35 @@ class Fueling extends Model
         return $this->belongsTo(Vehicle::class);
     }
 
-    public function getPrevFueling($mileage)
+    public function route(): BelongsTo
     {
+        return $this->belongsTo(Route::class);
+    }
+
+    public function isLastOfRoute($fueling = null)
+    {
+        $fueling ??= $this;
+        if ($fueling->route && $fueling->id === $fueling->route->getLastFueling()->id) {
+            return true;
+        }
+        return false;
+    }
+
+    public function getFuelConsumption($fueling = null)
+    {
+        $fueling ??= $this;
+        $prev_fueling = $fueling->getPrevFueling();
+        if ($prev_fueling?->full) {
+            $mileage_difference = $fueling->mileage - $prev_fueling->mileage;
+            $fuel_consumption = round($fueling->amount / $mileage_difference * 100, 2);
+            return $fuel_consumption;
+        }
+        return null;
+    }
+
+    public function getPrevFueling($mileage = null)
+    {
+        $mileage ??= $this->mileage;
         return Fueling::where('vehicle_id', $this->vehicle_id)
             ->where('id', '<>', $this->id)
             ->where('mileage', '<', $mileage)
@@ -42,8 +69,9 @@ class Fueling extends Model
             ->first();
     }
 
-    public function getNextFueling($mileage)
+    public function getNextFueling($mileage = null)
     {
+        $mileage ??= $this->mileage;
         return Fueling::where('vehicle_id', $this->vehicle_id)
             ->where('id', '<>', $this->id)
             ->where('mileage', '>', $mileage)
@@ -67,31 +95,6 @@ class Fueling extends Model
             ->first();
     }
 
-    public function calculateFuelConsumption($calculate_next = true, $save = false)
-    {
-        if ($this->full) {
-            $prev_fueling = $this->getPrevFueling($this->mileage);
-            if ($prev_fueling && $prev_fueling->full) {
-                $mileage_difference = $this->mileage - $prev_fueling->mileage;
-                $fuel_consumption = $this->amount / $mileage_difference * 100;
-                $this->fuel_consumption = $fuel_consumption;
-                if ($save) {
-                    $this->saveQuietly();
-                }
-            }
-            if ($calculate_next) {
-                $next_fueling = $this->getNextFueling($this->mileage);
-                if ($next_fueling && $next_fueling->full) {
-                    $mileage_difference = $next_fueling->mileage - $this->mileage;
-                    $fuel_consumption = $next_fueling->amount / $mileage_difference * 100;
-                    $fuel_consumption = round($fuel_consumption, 2);
-                    $next_fueling->fuel_consumption = $fuel_consumption;
-                    $next_fueling->saveQuietly();
-                }
-            }
-        }
-    }
-
     protected static function boot()
     {
         parent::boot();
@@ -101,17 +104,23 @@ class Fueling extends Model
         });
 
         static::creating(function ($fueling) {
-            $fueling->calculateFuelConsumption();
-        });
-
-        static::updating(function ($fueling) {
-            $fueling->calculateFuelConsumption();
+            $vehicle = Vehicle::find($fueling->vehicle_id);
+            if ($fueling->newRoute || !count($vehicle->fuelings)) {
+                $newRoute = new Route;
+                $vehicle = Vehicle::find($fueling->vehicle->id);
+                $vehicle->routes()->save($newRoute);
+                $fueling->route()->associate($newRoute);
+            } else {
+                $route = $fueling->getPrevFueling()->route;
+                $fueling->route()->associate($route);
+            }
+            unset($fueling->newRoute);
         });
 
         static::deleted(function ($fueling) {
-            $next_fueling = $fueling->getNextFueling($fueling->mileage);
-            if ($next_fueling) {
-                $next_fueling->calculateFuelConsumption(false, true);
+            $route = $fueling->route;
+            if (!count($route->fuelings)) {
+                $route->delete();
             }
         });
     }

@@ -24,13 +24,20 @@ class Vehicle extends Model
         'fuel'
     ];
 
-    public function getAverageFuelConsumption($data)
+    public function getAverageFuelConsumption($vehicle = null)
     {
-        $avg = $data->fuelings->avg('fuel_consumption');
-        if ($avg) {
-            $avg = round($avg, 2);
+        $vehicle ??= $this;
+        $totalAmount = 0;
+        $totalDistance = 0;
+        foreach ($vehicle->fuelings as $key => $fueling) {
+            $prev_fueling = $fueling->getPrevFueling();
+            if ($prev_fueling) {
+                $totalDistance += ($fueling->mileage - $prev_fueling->mileage);
+                $totalAmount += $fueling->amount;
+            }
         }
-        return $avg;
+        if ($totalDistance === 0) return null;
+        return round(($totalAmount / $totalDistance * 100), 2);
     }
 
     /**
@@ -47,5 +54,13 @@ class Vehicle extends Model
     public function fuelings(): HasMany
     {
         return $this->hasMany(Fueling::class);
+    }
+
+    /**
+     * Routes of this vehicle
+     */
+    public function routes(): HasMany
+    {
+        return $this->hasMany(Route::class);
     }
 }
