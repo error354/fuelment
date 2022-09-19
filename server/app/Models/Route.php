@@ -42,7 +42,7 @@ class Route extends Model
     public function getFirstFueling($route = null)
     {
         $route ??= $this;
-        return $route->fuelings()->orderBy('mileage', 'ASC')->first();
+        return $route->fuelings->sortBy('mileage')->first();
     }
 
     /**
@@ -51,7 +51,7 @@ class Route extends Model
     public function getLastFueling($route = null)
     {
         $route ??= $this;
-        return $route->fuelings()->orderBy('mileage', 'DESC')->first();
+        return $route->fuelings->sortByDesc('mileage')->first();
     }
 
     /**
@@ -60,7 +60,16 @@ class Route extends Model
     public function getNextRoute($route = null)
     {
         $route ??= $this;
-        return $route->vehicle->fuelings()->where('mileage', '>', $this->getLastFueling())->orderBy('mileage', 'ASC')->first()->route;
+        return $route->vehicle->fuelings->where('mileage', '>', $route->getLastFueling()->mileage)->sortBy('mileage')->first()?->route;
+    }
+
+    /**
+     * Get previous route
+     */
+    public function getPrevRoute($route = null)
+    {
+        $route ??= $this;
+        return $route->vehicle->fuelings->where('mileage', '<', $route->getFirstFueling()->mileage)->sortByDesc('mileage')->first()?->route;
     }
 
     /**

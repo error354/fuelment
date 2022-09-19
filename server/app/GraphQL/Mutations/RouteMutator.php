@@ -6,7 +6,6 @@ use App\Models\Fueling;
 use App\Models\Route;
 use App\Models\Vehicle;
 use GraphQL\Type\Definition\ResolveInfo;
-use Illuminate\Support\Facades\Log;
 use Nuwave\Lighthouse\Exceptions\ValidationException;
 use Nuwave\Lighthouse\Support\Contracts\GraphQLContext;
 
@@ -35,7 +34,7 @@ class RouteMutator
         ]);
       }
       $lastFuelingOfCurrentRoute = $currentRoute->getLastFueling();
-      $fuelingsToUpdate = $currentRoute->fuelings->where('mileage', '<=', $lastFuelingOfCurrentRoute->mileage);
+      $fuelingsToUpdate = $currentRoute->fuelings->where('mileage', '<=', $lastFuelingOfCurrentRoute->mileage)->where('mileage', '>=', $fueling->mileage);
       foreach ($fuelingsToUpdate as $fuelingToUpdate) {
         $fuelingToUpdate->route()->associate($newRoute);
         $fuelingToUpdate->save();
@@ -56,5 +55,28 @@ class RouteMutator
     // TODO: Move validation logic to validator class?
 
     return $newRoute;
+  }
+
+  function delete($rootValue, array $args, GraphQLContext $context, ResolveInfo $resolveInfo)
+  {
+    $routeId = $args["id"];
+    $route = Route::find($routeId);
+    if (!$route) {
+      throw ValidationException::withMessages([
+        'id' => ['There is no route with id ' . $routeId . '.'],
+      ]);
+    };
+    $prevRoute = $route->getPrevRoute();
+    if (!$prevRoute) {
+      throw ValidationException::withMessages([
+        'id' => ['The first fueling of a vehicle cannot be deleted'],
+      ]);
+    }
+    foreach ($route->fuelings as $key => $fueling) {
+      $fueling->route()->associate($prevRoute);
+      $fueling->save();
+    }
+    $route->delete();
+    return null;
   }
 }
