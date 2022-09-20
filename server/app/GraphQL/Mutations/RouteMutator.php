@@ -77,6 +77,7 @@ class RouteMutator
       $fueling->save();
     }
     $route->delete();
-    return null;
+    return $route;
+    // TODO: Fix Internal Server Error when requesting fuelings list in delete mutation
   }
 }
