@@ -22,6 +22,7 @@ type Route {
 extend type Query {
     route(id: ID @eq): Route @find
     routes(
+        vehicleId: ID @eq(key: "vehicle_id")
         orderBy: _
             @orderBy(
                 columns: [
