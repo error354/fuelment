@@ -13,7 +13,7 @@
           <q-img
             no-spinner
             no-native-menu
-            src="src/assets/logo_without_background.svg"
+            src="~src/assets/logo_without_background.svg"
             height="1.8em"
             width="7em"
             fit="contain"
