@@ -2,7 +2,7 @@
 
 namespace App\Http\Traits;
 
-use Nuwave\Lighthouse\Exceptions\GenericException;
+use Illuminate\Support\Facades\Auth;
 
 trait HasPivot
 {
@@ -10,10 +10,8 @@ trait HasPivot
   {
     $fieldName = $args['directive'][0];
     if (!$data->pivot) {
-      throw new GenericException("Field {$fieldName} can be requested only in a nested query");
-      return null;
+      return Auth::user()?->vehicles?->find($data->id)?->pivot[$fieldName];
     }
-    $res = $data->pivot[$fieldName];
-    return $res;
+    return $data->pivot[$fieldName];
   }
 }
