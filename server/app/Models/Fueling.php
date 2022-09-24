@@ -51,7 +51,7 @@ class Fueling extends Model
     {
         $fueling ??= $this;
         $prev_fueling = $fueling->getPrevFueling();
-        if ($prev_fueling?->full) {
+        if ($prev_fueling?->full && $fueling->full) {
             $mileage_difference = $fueling->mileage - $prev_fueling->mileage;
             $fuel_consumption = round($fueling->amount / $mileage_difference * 100, 2);
             return $fuel_consumption;
