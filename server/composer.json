@@ -8,7 +8,6 @@
         "php": "^8.0",
         "chelout/laravel-relationship-events": "^1.5",
         "doctrine/dbal": "^3.3",
-        "fruitcake/laravel-cors": "^2.0.5",
         "guzzlehttp/guzzle": "^7.2",
         "illuminate/auth": "^9.0",
         "laravel/framework": "^9.0",
