@@ -10,20 +10,23 @@
           @click="showDrawer = !showDrawer"
         />
         <q-toolbar-title>
-          <q-img
-            no-spinner
-            no-native-menu
-            src="~src/assets/logo_without_background.svg"
-            height="1.8em"
-            width="7em"
-            fit="contain"
-          />
+          <router-link to="/">
+            <q-img
+              no-spinner
+              no-native-menu
+              src="~src/assets/logo_without_background.svg"
+              height="1.8em"
+              width="7em"
+              fit="contain"
+            />
+          </router-link>
         </q-toolbar-title>
         <q-btn
           class="gt-sm"
           flat
           stretch
           icon-right="mdi-home-outline"
+          to="/"
           :label="$t('header.home')"
         />
         <q-btn
