@@ -13,7 +13,7 @@
         "laravel/framework": "^9.0",
         "laravel/sanctum": "^2.14",
         "laravel/tinker": "^2.7",
-        "mll-lab/laravel-graphql-playground": "^2.6",
+        "mll-lab/laravel-graphiql": "^3.0",
         "nuwave/lighthouse": "^5.40",
         "spatie/laravel-permission": "^5.5"
     },
