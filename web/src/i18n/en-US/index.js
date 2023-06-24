@@ -60,6 +60,8 @@ export default {
     noVehicles: "You have no vehicles yet",
     addingDialogTitle: "Adding fueling",
     editingDialogTitle: "Editing fueling",
+    save: "Save",
+    cancel: "Cancel",
     details: "Details",
   },
 };
