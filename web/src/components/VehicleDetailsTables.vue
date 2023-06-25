@@ -8,9 +8,47 @@
     align="right"
     narrow-indicator
   >
+    <q-btn
+      round
+      flat
+      color="primary"
+      icon="mdi-arrow-left"
+      size="md"
+      @click="$router.back()"
+    >
+      <q-tooltip self="center middle">{{
+        $t("vehicleDetails.return")
+      }}</q-tooltip>
+    </q-btn>
     <FuelTypeDot :fuel="vehicle.fuel" />
     <span class="text-h6 text-black">{{ vehicle.name }}</span>
     <q-space />
+    <q-btn
+      round
+      flat
+      color="primary"
+      icon="mdi-tune"
+      size="md"
+      class="q-ml-sm"
+      :to="`/administration/vehicle/${vehicle.id}`"
+    >
+      <q-tooltip self="center middle">{{
+        $t("vehicleDetails.settings")
+      }}</q-tooltip>
+    </q-btn>
+    <q-btn
+      round
+      flat
+      color="secondary"
+      icon="add"
+      size="md"
+      v-if="vehicle.canAdd"
+      @click="
+        showAddFuelingDialog(vehicle.name, showPrice(vehicle.priceSetting))
+      "
+    >
+      <q-tooltip self="center middle">{{ $t("fuelingsTable.add") }}</q-tooltip>
+    </q-btn>
     <q-tab name="fuelings" label="Tankowania" />
     <q-tab name="routes" label="Trasy" />
   </q-tabs>
