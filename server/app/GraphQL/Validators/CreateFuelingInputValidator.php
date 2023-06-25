@@ -18,13 +18,9 @@ class CreateFuelingInputValidator extends Validator
      */
     public function rules(): array
     {
-        $query = request()['query'];
-        $vehicle_id = Str::betweenFirst($query, 'id: ', ',');
-        if (!is_numeric($vehicle_id)) {
-            $vehicle_id = Str::betweenFirst($query, 'id: ', ')');
-        }
-
+        $vehicle_id = $this->arg('vehicleId');
         $vehicle = Vehicle::find($vehicle_id);
+        
         $price = $this->arg('price');
         if ($vehicle->price_setting == 'disabled' && $price) {
             throw ValidationException::withMessages(["Adding prices is disabled for this vehicle."]);

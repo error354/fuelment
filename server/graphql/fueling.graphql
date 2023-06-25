@@ -43,6 +43,7 @@ extend type Query {
 }
 
 input CreateFuelingInput @validator {
+    vehicleId: ID! @rename(attribute: "vehicle_id")
     amount: Float!
     mileage: Float!
     full: Boolean!
@@ -60,10 +61,12 @@ input UpdateFuelingInput @validator {
 }
 
 extend type Mutation @guard {
-    updateFueling(id: ID!, input: UpdateFuelingInput! @spread): Fueling!
+    createFueling(input: CreateFuelingInput! @spread): Fueling
+        @create
+    updateFueling(id: ID!, input: UpdateFuelingInput! @spread): Fueling
         @update
         @can(ability: "update", injectArgs: true)
-    deleteFueling(id: [ID!]!): [Fueling!]!
+    deleteFueling(id: [ID!]!): [Fueling]
         @delete
         @can(ability: "delete", injectArgs: true)
 }

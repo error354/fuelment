@@ -119,11 +119,6 @@ input UpdateVehicleInput {
     photoSetting: VehicleSettings @rename(attribute: "photo_setting")
     fuel: VehicleFuel
     users: UpdateVehiclesHasMany
-    fuelings: UpdateVehicleFuelingHasMany
-}
-
-input UpdateVehicleFuelingHasMany {
-    create: [CreateFuelingInput]
 }
 
 input CreateVehiclesHasMany {
