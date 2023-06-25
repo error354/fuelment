@@ -64,4 +64,11 @@ export default {
     cancel: "Cancel",
     details: "Details",
   },
+  routesTable: {
+    distance: "Distance",
+    avgFuelConsumption: "Average fuel consumption",
+    kilometerCost: "Kilometer cost",
+    delete: "Delete",
+    empty: "This vehicle has no routes yet",
+  },
 };

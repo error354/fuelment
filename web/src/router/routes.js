@@ -1,5 +1,3 @@
-import { useProfileStore } from "../stores/profile.js";
-
 const routes = [
   {
     path: "/login",
@@ -24,6 +22,10 @@ const routes = [
       {
         path: "",
         component: () => import("pages/IndexPageWrapper.vue"),
+      },
+      {
+        path: "/vehicle/:id",
+        component: () => import("pages/VehicleDetailsPage.vue"),
       },
     ],
   },

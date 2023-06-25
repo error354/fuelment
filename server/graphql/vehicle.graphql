@@ -57,8 +57,22 @@ type Vehicle {
     routes: [Fueling] @hasMany(type: PAGINATOR)
 
     "Vehicle's average fuel consumption"
-    avgFuelConsumption: Float
-        @field(resolver: "App\\Models\\Vehicle@getAverageFuelConsumption")
+    avgFuelConsumption(dateFrom: Date, dateTo: Date): Float
+        @method(name: "getAverageFuelConsumption")
+
+    "Distance driven by the vehicle"
+    distance(dateFrom: Date, dateTo: Date): Int @method(name: "getDistance")
+
+    "Get total amount of fuel used by this vehicle"
+    totalFuelAmount(dateFrom: Date, dateTo: Date): Float
+        @method(name: "getTotalFuelAmount")
+
+    "Get total cost of fuel used by this vehicle"
+    totalCost(dateFrom: Date, dateTo: Date): Float @method(name: "getTotalCost")
+
+    "Get average cost of driving one kilometer of the vehicle"
+    kilometerCost(dateFrom: Date, dateTo: Date): Float
+        @method(name: "getKilometerCost")
 }
 
 enum VehicleSettings {

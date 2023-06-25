@@ -19,18 +19,7 @@
       <div
         class="relative-position row items-center handle cursor-grab full-width"
       >
-        <div>
-          <q-icon
-            name="mdi-circle-medium"
-            class="cursor-default"
-            size="md"
-            :color="color"
-          >
-            <q-tooltip self="center middle">
-              {{ $t(`fuelingsTable.fuel.${vehicle.fuel}`) }}
-            </q-tooltip>
-          </q-icon>
-        </div>
+        <FuelTypeDot :fuel="vehicle.fuel" />
         <span class="text-h6">{{ vehicle.name }}</span>
         <q-space />
         <span class="q-mr-sm" v-if="vehicle.avgFuelConsumption">
@@ -55,7 +44,14 @@
             $t("fuelingsTable.add")
           }}</q-tooltip>
         </q-btn>
-        <q-btn round flat color="primary" icon="read_more" size="md">
+        <q-btn
+          round
+          flat
+          color="primary"
+          icon="read_more"
+          size="md"
+          @click="this.$router.push(`/vehicle/${vehicle.id}`)"
+        >
           <q-tooltip self="center middle">{{
             $t("fuelingsTable.details")
           }}</q-tooltip>
@@ -72,41 +68,6 @@
         {{ pricePerLiter(props.row.price, props.row.amount) }}
       </q-td>
     </template>
-    <template v-slot:body-cell-actions="props">
-      <q-td :props="props" class="row justify-center content-center">
-        <q-btn
-          round
-          flat
-          color="primary"
-          icon="mdi-pencil"
-          size="xs"
-          v-if="vehicle.canEdit"
-          @click="
-            showEditFuelingDialog(
-              vehicle.name,
-              props.row.date,
-              props.row.mileage,
-              props.row.amount,
-              props.row.full,
-              showPrice(vehicle.priceSetting),
-              props.row.price
-            )
-          "
-        >
-          <q-tooltip>{{ $t("fuelingsTable.edit") }}</q-tooltip>
-        </q-btn>
-        <q-btn
-          round
-          flat
-          color="primary"
-          icon="mdi-delete"
-          size="xs"
-          v-if="vehicle.canDelete"
-        >
-          <q-tooltip>{{ $t("fuelingsTable.delete") }}</q-tooltip>
-        </q-btn>
-      </q-td>
-    </template>
   </q-table>
 </template>
 
@@ -116,11 +77,15 @@ import { useQuasar } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
 import { i18n } from "../boot/i18n";
 import FuelingDialog from "src/components/FuelingDialog.vue";
+import FuelTypeDot from "src/components/FuelTypeDot.vue";
 
 const $t = i18n.global.t;
 
 export default defineComponent({
   name: "VehicleTable",
+  components: {
+    FuelTypeDot,
+  },
   props: {
     vehicle: Object,
   },
@@ -153,65 +118,6 @@ export default defineComponent({
         .onDismiss(() => {
           console.log("Called on OK or Cancel");
         });
-
-    const showEditFuelingDialog = (
-      vehicleName,
-      date,
-      mileage,
-      amount,
-      full,
-      showPrice,
-      price
-    ) => {
-      console.log(date);
-      $q.dialog({
-        component: FuelingDialog,
-        componentProps: {
-          vehicleName: vehicleName,
-          title: $t("fuelingsTable.editingDialogTitle"),
-          date: date,
-          mileage: mileage,
-          amount: amount,
-          price: price,
-          full: full,
-          showPrice: showPrice,
-        },
-      })
-        .onOk(() => {
-          console.log("OK");
-        })
-        .onCancel(() => {
-          console.log("Cancel");
-        })
-        .onDismiss(() => {
-          console.log("Called on OK or Cancel");
-        });
-    };
-
-    let color = ref("blue-grey");
-    switch (props.vehicle.fuel) {
-      case "DIESEL":
-        color = "dark";
-        break;
-      case "PETROL":
-        color = "green";
-        break;
-      case "LPG":
-        color = "amber";
-        break;
-      case "CNG":
-        color = "brown";
-        break;
-      case "HYDROGEN":
-        color = "light-blue";
-        break;
-      case "ELECTRICITY":
-        color = "yellow";
-        break;
-      default:
-        color = "blue-grey";
-        break;
-    }
 
     const columns = ref([
       {
@@ -255,16 +161,9 @@ export default defineComponent({
         name: "pricePerLiter",
         label: $t("fuelingsTable.pricePerLiter"),
       },
-      { name: "actions", label: "Akcje", align: "center" },
     ]);
 
-    const showActionsColumn = ref(
-      props.vehicle.canEdit || props.vehicle.canDelete
-    );
     const visibleColumns = ref(["pricePerLiter"]);
-    if (showActionsColumn.value) {
-      visibleColumns.value.push("actions");
-    }
 
     const pricePerLiter = (price, amount) => {
       let result = (price / amount).toFixed(2);
@@ -340,14 +239,12 @@ export default defineComponent({
       columns,
       fuelings,
       loadingFuelings,
-      color,
       paginationProps,
       getFuelings,
       visibleColumns,
-      showAddFuelingDialog,
-      showEditFuelingDialog,
       pricePerLiter,
       showPrice,
+      showAddFuelingDialog,
     };
   },
 });
