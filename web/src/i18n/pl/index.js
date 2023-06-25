@@ -63,6 +63,7 @@ export default {
     save: "Zapisz",
     cancel: "Anuluj",
     details: "Szczegóły",
+    newRoute: "Nowa trasa",
   },
   routesTable: {
     distance: "Dystans",
@@ -70,5 +71,9 @@ export default {
     kilometerCost: "Koszt kilometra",
     delete: "Usuń",
     empty: "Ten pojazd nie ma jeszcze tras",
+  },
+  vehicleDetails: {
+    settings: "Ustawienia",
+    return: "Powrót",
   },
 };

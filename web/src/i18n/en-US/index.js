@@ -63,6 +63,7 @@ export default {
     save: "Save",
     cancel: "Cancel",
     details: "Details",
+    newRoute: "New route",
   },
   routesTable: {
     distance: "Distance",
@@ -70,5 +71,9 @@ export default {
     kilometerCost: "Kilometer cost",
     delete: "Delete",
     empty: "This vehicle has no routes yet",
+  },
+  vehicleDetails: {
+    settings: "Settings",
+    return: "Return",
   },
 };
