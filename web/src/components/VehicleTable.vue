@@ -37,7 +37,11 @@
           size="md"
           v-if="vehicle.canAdd"
           @click="
-            showAddFuelingDialog(vehicle.name, showPrice(vehicle.priceSetting))
+            showAddFuelingDialog(
+              vehicle.id,
+              vehicle.name,
+              showPrice(vehicle.priceSetting)
+            )
           "
         >
           <q-tooltip self="center middle">{{
@@ -99,17 +103,19 @@ export default defineComponent({
       return true;
     };
 
-    const showAddFuelingDialog = (vehicleName, showPrice) =>
+    const showAddFuelingDialog = (vehicleId, vehicleName, showPrice) =>
       $q
         .dialog({
           component: FuelingDialog,
           componentProps: {
+            vehicleId: vehicleId,
             vehicleName: vehicleName,
             title: $t("fuelingsTable.addingDialogTitle"),
             showPrice: showPrice,
           },
         })
         .onOk(() => {
+          getFuelings();
           console.log("OK");
         })
         .onCancel(() => {

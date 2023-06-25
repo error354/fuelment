@@ -43,20 +43,26 @@
           :label="$t('fuelingsTable.pricePerLiter')"
           v-if="showPrice"
         />
-        <q-checkbox v-model="newFull" :label="$t('fuelingsTable.full')" />
+        <q-checkbox
+          class="full-width"
+          v-model="newFull"
+          :label="$t('fuelingsTable.full')"
+        />
+        <q-checkbox v-model="newRoute" :label="$t('fuelingsTable.newRoute')" />
       </q-card-section>
       <q-card-actions align="right">
         <q-btn
           color="negative"
           flat
           :label="$t('fuelingsTable.cancel')"
-          @click="onCancelClick"
+          @click="onDialogCancel"
         />
         <q-btn
           color="primary"
           flat
           :label="$t('fuelingsTable.save')"
-          @click="onOKClick"
+          :loading="addingFueling"
+          @click="addFueling"
         />
       </q-card-actions>
     </q-card>
@@ -66,15 +72,18 @@
 <script>
 import { ref, computed } from "vue";
 import { useDialogPluginComponent } from "quasar";
+import { apiClient, handleErrors } from "src/boot/apiClient";
 
 export default {
   props: {
+    vehicleId: Number,
     vehicleName: String,
     title: String,
     date: Date,
     mileage: Number,
     amount: Number,
     full: Boolean,
+    route: Boolean,
     price: Number,
     showPrice: Boolean,
   },
@@ -86,16 +95,8 @@ export default {
   ],
 
   setup(props) {
-    // REQUIRED; must be called inside of setup()
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
-    // dialogRef      - Vue ref to be applied to QDialog
-    // onDialogHide   - Function to be used as handler for @hide on QDialog
-    // onDialogOK     - Function to call to settle dialog with "ok" outcome
-    //                    example: onDialogOK() - no payload
-    //                    example: onDialogOK({ /*.../* }) - with payload
-    // onDialogCancel - Function to call to settle dialog with "cancel" outcome
-
     const calcPricePerLiter = (pricePerLiter, amount) => {
       if (!pricePerLiter || !amount) {
         return null;
@@ -107,10 +108,13 @@ export default {
     const newMileage = ref(props.mileage);
     const newAmount = ref(props.amount);
     const newFull = ref(props.full);
+    const newRoute = ref(props.route);
     const newPrice = ref(props.price);
     const newPricePerLiter = ref(
       calcPricePerLiter(newPrice.value, newAmount.value)
     );
+
+    const addingFueling = ref(false);
 
     const totalPrice = computed({
       get() {
@@ -132,32 +136,76 @@ export default {
       },
     });
 
+    const addFuelingMutation = `
+      mutation createFueling($vehicleId: ID!, $amount: Float!, $mileage: Float!, $full: Boolean!, $date: Date, $price: Float, $newRoute: Boolean) {
+        createFueling(
+          input: {vehicleId: $vehicleId, amount: $amount, mileage: $mileage, full: $full, date: $date, price: $price, newRoute: $newRoute}
+        ) {
+          id
+          vehicle {
+            id
+            name
+          }
+          amount
+          mileage
+          full
+          fuelConsumption
+          kilometerCost
+          date
+          price
+          isLastOfRoute
+          route {
+            id
+          }
+        }
+      }
+    `;
+
+    async function addFueling() {
+      addingFueling.value = true;
+      await apiClient
+        .executeMutation({
+          query: addFuelingMutation,
+          variables: {
+            vehicleId: props.vehicleId,
+            amount: parseFloat(newAmount.value),
+            mileage: parseFloat(newMileage.value),
+            full: Boolean(newFull.value),
+            date: newDate.value,
+            price: parseFloat(newPrice.value),
+            newRoute: Boolean(newRoute.value),
+          },
+        })
+        .then((response) => {
+          if (response.error) {
+            handleErrors(response.error);
+          } else {
+            onDialogOK();
+          }
+        });
+      addingFueling.value = false;
+    }
+
     return {
-      // This is REQUIRED;
-      // Need to inject these (from useDialogPluginComponent() call)
-      // into the vue scope for the vue html template
       dialogRef,
       onDialogHide,
-
-      // other methods that we used in our vue html template;
-      // these are part of our example (so not required)
-      onOKClick() {
-        // on OK, it is REQUIRED to
-        // call onDialogOK (with optional payload)
-        onDialogOK();
-        // or with payload: onDialogOK({ ... })
-        // ...and it will also hide the dialog automatically
-      },
-
-      // we can passthrough onDialogCancel directly
-      onCancelClick: onDialogCancel,
+      onDialogCancel,
+      addFueling,
       newDate,
       newMileage,
       newAmount,
       newFull,
+      newRoute,
       pricePerLiter,
       totalPrice,
+      addingFueling,
     };
   },
 };
 </script>
+
+<style scoped>
+.full-width {
+  width: 100%;
+}
+</style>
