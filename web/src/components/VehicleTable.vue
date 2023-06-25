@@ -224,6 +224,7 @@ export default defineComponent({
             page: pagination.pagination.page,
             first: 5,
           },
+          tags: [`vehicle_${props.vehicle.id}_fuelings`],
         })
         .then((response) => {
           if (response.error) {

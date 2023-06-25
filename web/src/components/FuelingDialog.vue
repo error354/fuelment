@@ -12,6 +12,7 @@
           filled
           class="q-mb-sm"
           :label="$t('fuelingsTable.date')"
+          :disable="addingFueling"
         />
         <q-input
           v-model="newMileage"
@@ -19,6 +20,7 @@
           filled
           class="q-mb-sm"
           :label="$t('fuelingsTable.mileage')"
+          :disable="addingFueling"
         />
         <q-input
           v-model="newAmount"
@@ -26,6 +28,7 @@
           filled
           class="q-mb-sm"
           :label="$t('fuelingsTable.amount')"
+          :disable="addingFueling"
         />
         <q-input
           v-model="totalPrice"
@@ -34,6 +37,7 @@
           filled
           :label="$t('fuelingsTable.price')"
           v-if="showPrice"
+          :disable="addingFueling"
         />
         <q-input
           v-model="pricePerLiter"
@@ -42,13 +46,19 @@
           filled
           :label="$t('fuelingsTable.pricePerLiter')"
           v-if="showPrice"
+          :disable="addingFueling"
         />
         <q-checkbox
           class="full-width"
           v-model="newFull"
           :label="$t('fuelingsTable.full')"
+          :disable="addingFueling"
         />
-        <q-checkbox v-model="newRoute" :label="$t('fuelingsTable.newRoute')" />
+        <q-checkbox
+          v-model="newRoute"
+          :label="$t('fuelingsTable.newRoute')"
+          :disable="addingFueling"
+        />
       </q-card-section>
       <q-card-actions align="right">
         <q-btn
@@ -88,11 +98,7 @@ export default {
     showPrice: Boolean,
   },
 
-  emits: [
-    // REQUIRED; need to specify some events that your
-    // component will emit through useDialogPluginComponent()
-    ...useDialogPluginComponent.emits,
-  ],
+  emits: [...useDialogPluginComponent.emits],
 
   setup(props) {
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
@@ -175,6 +181,7 @@ export default {
             price: parseFloat(newPrice.value),
             newRoute: Boolean(newRoute.value),
           },
+          clearCacheTags: [`vehicle_${props.vehicleId}_fuelings`],
         })
         .then((response) => {
           if (response.error) {
