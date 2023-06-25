@@ -50,7 +50,7 @@ export default defineComponent({
   components: {
     FuelTypeDot,
     VehicleDetailsFuelingsTable,
-    VehicleDetailsRoutesTable
+    VehicleDetailsRoutesTable,
   },
   props: {
     vehicleId: Number,
@@ -207,9 +207,9 @@ export default defineComponent({
           const routesData = response.data.routes.data;
           routesPaginationProps.value.pagination.rowsNumber =
             response.data.routes.paginatorInfo.total;
-            routesPaginationProps.value.pagination.page =
+          routesPaginationProps.value.pagination.page =
             response.data.routes.paginatorInfo.currentPage;
-            routes.value = routesData;
+          routes.value = routesData;
         });
       loadingRoutes.value = false;
     }
@@ -229,7 +229,7 @@ export default defineComponent({
       getVehicle,
       loadingVehicle,
       loadingRoutes,
-      routes
+      routes,
     };
   },
 });

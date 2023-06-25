@@ -9,7 +9,7 @@
     :visible-columns="visibleColumns"
     :no-data-label="$t('routesTable.empty')"
     v-model:pagination="props.pagination"
-    :rows-per-page-options="[ 5, 10, 15, 20, 25, 50 ]"
+    :rows-per-page-options="[5, 10, 15, 20, 25, 50]"
     icon-first-page="first_page"
     icon-last-page="last_page"
     @request="$emit('pageChanged')"
@@ -71,9 +71,7 @@ export default defineComponent({
       { name: "actions", label: "Akcje", align: "center" },
     ]);
 
-    const showActionsColumn = ref(
-      props.routes.canDelete
-    );
+    const showActionsColumn = ref(props.routes.canDelete);
     if (showActionsColumn.value) {
       visibleColumns.value.push("actions");
     }

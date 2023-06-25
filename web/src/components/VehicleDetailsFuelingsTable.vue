@@ -9,7 +9,7 @@
     :visible-columns="visibleColumns"
     :no-data-label="$t('fuelingsTable.empty')"
     v-model:pagination="props.pagination"
-    :rows-per-page-options="[ 5, 10, 15, 20, 25, 50 ]"
+    :rows-per-page-options="[5, 10, 15, 20, 25, 50]"
     icon-first-page="first_page"
     icon-last-page="last_page"
     @request="$emit('pageChanged')"
