@@ -47,8 +47,9 @@
         showAddFuelingDialog(
           vehicle.id,
           vehicle.name,
-          showPrice(vehicle.priceSetting)
-        )
+          showPrice(vehicle.priceSetting),
+          $t('fuelingsTable.addingDialogTitle')
+        ).onOk(getFuelings)
       "
     >
       <q-tooltip self="center middle">{{ $t("fuelingsTable.add") }}</q-tooltip>
@@ -86,6 +87,7 @@ import FuelTypeDot from "src/components/FuelTypeDot.vue";
 import FuelingDialog from "src/components/FuelingDialog.vue";
 import VehicleDetailsFuelingsTable from "src/components/VehicleDetailsFuelingsTable.vue";
 import VehicleDetailsRoutesTable from "src/components/VehicleDetailsRoutesTable.vue";
+import { useFuelingDialog } from "src/composables/fuelingDialog";
 
 const $t = i18n.global.t;
 
@@ -99,7 +101,7 @@ export default defineComponent({
   props: {
     vehicleId: Number,
   },
-  async setup(props) {
+  async setup(props, context) {
     const $q = useQuasar();
 
     const fuelings = ref([]);
@@ -110,27 +112,7 @@ export default defineComponent({
     const loadingVehicle = ref({});
     const tab = ref("fuelings");
 
-    const showPrice = (priceSetting) => {
-      if (priceSetting == "DISABLED") {
-        return false;
-      }
-      return true;
-    };
-
-    const showAddFuelingDialog = (vehicleId, vehicleName, showPrice) =>
-      $q
-        .dialog({
-          component: FuelingDialog,
-          componentProps: {
-            vehicleId: vehicleId,
-            vehicleName: vehicleName,
-            title: $t("fuelingsTable.addingDialogTitle"),
-            showPrice: showPrice,
-          },
-        })
-        .onOk(() => {
-          getFuelings();
-        });
+    const { showPrice, showAddFuelingDialog } = useFuelingDialog(context);
 
     const getFuelingsQuery = `
       query getFuelings ($vehicleId: ID! $page: Int, $first: Int) {

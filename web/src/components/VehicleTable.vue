@@ -40,8 +40,9 @@
             showAddFuelingDialog(
               vehicle.id,
               vehicle.name,
-              showPrice(vehicle.priceSetting)
-            )
+              showPrice(vehicle.priceSetting),
+              $t('fuelingsTable.addingDialogTitle')
+            ).onOk(getFuelings)
           "
         >
           <q-tooltip self="center middle">{{
@@ -80,8 +81,8 @@ import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
 import { i18n } from "../boot/i18n";
-import FuelingDialog from "src/components/FuelingDialog.vue";
 import FuelTypeDot from "src/components/FuelTypeDot.vue";
+import { useFuelingDialog } from "src/composables/fuelingDialog";
 
 const $t = i18n.global.t;
 
@@ -93,30 +94,10 @@ export default defineComponent({
   props: {
     vehicle: Object,
   },
-  setup(props) {
+  setup(props, context) {
     const $q = useQuasar();
 
-    const showPrice = (priceSetting) => {
-      if (priceSetting == "DISABLED") {
-        return false;
-      }
-      return true;
-    };
-
-    const showAddFuelingDialog = (vehicleId, vehicleName, showPrice) =>
-      $q
-        .dialog({
-          component: FuelingDialog,
-          componentProps: {
-            vehicleId: vehicleId,
-            vehicleName: vehicleName,
-            title: $t("fuelingsTable.addingDialogTitle"),
-            showPrice: showPrice,
-          },
-        })
-        .onOk(() => {
-          getFuelings();
-        });
+    const { showPrice, showAddFuelingDialog } = useFuelingDialog(context);
 
     const columns = ref([
       {
