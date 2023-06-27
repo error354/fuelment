@@ -18,6 +18,7 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy
+                  v-model="showCalendar"
                   cover
                   transition-show="scale"
                   transition-hide="scale"
@@ -28,6 +29,7 @@
                     today-btn
                     mask="YYYY-MM-DD"
                     :options="disableFutureDates"
+                    @update:model-value="showCalendar = false"
                   >
                   </q-date>
                 </q-popup-proxy>
@@ -135,6 +137,8 @@ export default {
       calcPricePerLiter(newPrice.value, newAmount.value)
     );
     const addingFueling = ref(false);
+    const showCalendar = ref(false);
+
     const totalPrice = computed({
       get() {
         return newPrice.value;
@@ -222,6 +226,7 @@ export default {
       totalPrice,
       addingFueling,
       disableFutureDates,
+      showCalendar,
     };
   },
 };

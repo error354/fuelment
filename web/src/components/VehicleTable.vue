@@ -116,13 +116,6 @@ export default defineComponent({
         })
         .onOk(() => {
           getFuelings();
-          console.log("OK");
-        })
-        .onCancel(() => {
-          console.log("Cancel");
-        })
-        .onDismiss(() => {
-          console.log("Called on OK or Cancel");
         });
 
     const columns = ref([

@@ -44,7 +44,11 @@
       size="md"
       v-if="vehicle.canAdd"
       @click="
-        showAddFuelingDialog(vehicle.name, showPrice(vehicle.priceSetting))
+        showAddFuelingDialog(
+          vehicle.id,
+          vehicle.name,
+          showPrice(vehicle.priceSetting)
+        )
       "
     >
       <q-tooltip self="center middle">{{ $t("fuelingsTable.add") }}</q-tooltip>
@@ -75,9 +79,11 @@
 
 <script>
 import { defineComponent, ref } from "vue";
+import { useQuasar } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
 import { i18n } from "../boot/i18n";
 import FuelTypeDot from "src/components/FuelTypeDot.vue";
+import FuelingDialog from "src/components/FuelingDialog.vue";
 import VehicleDetailsFuelingsTable from "src/components/VehicleDetailsFuelingsTable.vue";
 import VehicleDetailsRoutesTable from "src/components/VehicleDetailsRoutesTable.vue";
 
@@ -94,6 +100,8 @@ export default defineComponent({
     vehicleId: Number,
   },
   async setup(props) {
+    const $q = useQuasar();
+
     const fuelings = ref([]);
     const routes = ref([]);
     const vehicle = ref({});
@@ -101,6 +109,28 @@ export default defineComponent({
     const loadingRoutes = ref(false);
     const loadingVehicle = ref({});
     const tab = ref("fuelings");
+
+    const showPrice = (priceSetting) => {
+      if (priceSetting == "DISABLED") {
+        return false;
+      }
+      return true;
+    };
+
+    const showAddFuelingDialog = (vehicleId, vehicleName, showPrice) =>
+      $q
+        .dialog({
+          component: FuelingDialog,
+          componentProps: {
+            vehicleId: vehicleId,
+            vehicleName: vehicleName,
+            title: $t("fuelingsTable.addingDialogTitle"),
+            showPrice: showPrice,
+          },
+        })
+        .onOk(() => {
+          getFuelings();
+        });
 
     const getFuelingsQuery = `
       query getFuelings ($vehicleId: ID! $page: Int, $first: Int) {
@@ -159,7 +189,6 @@ export default defineComponent({
           id
           name
           fuel
-          avgFuelConsumption
           priceSetting
           canAdd
           canEdit
@@ -269,6 +298,8 @@ export default defineComponent({
       loadingVehicle,
       loadingRoutes,
       routes,
+      showPrice,
+      showAddFuelingDialog,
     };
   },
 });
