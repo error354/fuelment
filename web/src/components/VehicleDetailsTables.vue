@@ -47,7 +47,7 @@
         showAddFuelingDialog(
           vehicle.id,
           vehicle.name,
-          showPrice(vehicle.priceSetting),
+          vehicle.priceSetting,
           $t('fuelingsTable.addingDialogTitle')
         ).onOk(getFuelings)
       "
@@ -112,7 +112,7 @@ export default defineComponent({
     const loadingVehicle = ref({});
     const tab = ref("fuelings");
 
-    const { showPrice, showAddFuelingDialog } = useFuelingDialog(context);
+    const { showAddFuelingDialog } = useFuelingDialog(context);
 
     const getFuelingsQuery = `
       query getFuelings ($vehicleId: ID! $page: Int, $first: Int) {
@@ -280,7 +280,6 @@ export default defineComponent({
       loadingVehicle,
       loadingRoutes,
       routes,
-      showPrice,
       showAddFuelingDialog,
     };
   },

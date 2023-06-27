@@ -4,23 +4,16 @@ import FuelingDialog from "src/components/FuelingDialog.vue";
 export function useFuelingDialog(context) {
   const $q = useQuasar();
 
-  const showPrice = (priceSetting) => {
-    if (priceSetting == "DISABLED") {
-      return false;
-    }
-    return true;
-  };
-
-  const showAddFuelingDialog = (vehicleId, vehicleName, showPrice, title) =>
+  const showAddFuelingDialog = (vehicleId, vehicleName, priceSetting, title) =>
     $q.dialog({
       component: FuelingDialog,
       componentProps: {
         vehicleId: vehicleId,
         vehicleName: vehicleName,
+        priceSetting: priceSetting,
         title: title,
-        showPrice: showPrice,
       },
     });
 
-  return { showPrice, showAddFuelingDialog };
+  return { showAddFuelingDialog };
 }

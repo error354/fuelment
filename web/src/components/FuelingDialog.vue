@@ -53,12 +53,22 @@
             v-model="totalPrice"
             :label="$t('fuelingsTable.price')"
             v-if="showPrice"
+            :rules="
+              isPriceRequired
+                ? [$rules.required($t('validation.required'))]
+                : []
+            "
             :disable="addingFueling"
           />
           <dialog-number-input
             v-model="pricePerLiter"
             :label="$t('fuelingsTable.pricePerLiter')"
             v-if="showPrice"
+            :rules="
+              isPriceRequired
+                ? [$rules.required($t('validation.required'))]
+                : []
+            "
             :disable="addingFueling"
           />
           <q-checkbox
@@ -115,7 +125,7 @@ export default {
     full: Boolean,
     route: Boolean,
     price: Number,
-    showPrice: Boolean,
+    priceSetting: String,
   },
   emits: [...useDialogPluginComponent.emits],
   setup(props) {
@@ -138,6 +148,20 @@ export default {
     );
     const addingFueling = ref(false);
     const showCalendar = ref(false);
+
+    const showPrice = (priceSetting) => {
+      if (props.priceSetting == "DISABLED") {
+        return false;
+      }
+      return true;
+    };
+
+    const isPriceRequired = (priceSetting) => {
+      if (props.priceSetting == "REQUIRED") {
+        return true;
+      }
+      return false;
+    };
 
     const totalPrice = computed({
       get() {
@@ -227,6 +251,8 @@ export default {
       addingFueling,
       disableFutureDates,
       showCalendar,
+      showPrice,
+      isPriceRequired,
     };
   },
 };

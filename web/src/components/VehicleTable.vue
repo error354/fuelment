@@ -40,7 +40,7 @@
             showAddFuelingDialog(
               vehicle.id,
               vehicle.name,
-              showPrice(vehicle.priceSetting),
+              vehicle.priceSetting,
               $t('fuelingsTable.addingDialogTitle')
             ).onOk(getFuelings)
           "
@@ -97,7 +97,7 @@ export default defineComponent({
   setup(props, context) {
     const $q = useQuasar();
 
-    const { showPrice, showAddFuelingDialog } = useFuelingDialog(context);
+    const { showAddFuelingDialog } = useFuelingDialog(context);
 
     const columns = ref([
       {
@@ -224,7 +224,6 @@ export default defineComponent({
       getFuelings,
       visibleColumns,
       pricePerLiter,
-      showPrice,
       showAddFuelingDialog,
     };
   },
