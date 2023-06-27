@@ -1,64 +1,76 @@
 <template>
-  <q-dialog ref="dialogRef" @hide="onDialogHide">
+  <q-dialog ref="dialogRef" no-backdrop-dismiss @hide="onDialogHide">
     <q-card class="q-dialog-plugin">
       <q-card-section>
         <div class="text-h6" v-if="vehicleName">{{ vehicleName }}</div>
         <div class="text-h6" v-if="title">{{ title }}</div>
       </q-card-section>
       <q-card-section>
-        <q-input
-          v-model="newDate"
-          square
-          filled
-          class="q-mb-sm"
-          :label="$t('fuelingsTable.date')"
-          :disable="addingFueling"
-        />
-        <q-input
-          v-model="newMileage"
-          square
-          filled
-          class="q-mb-sm"
-          :label="$t('fuelingsTable.mileage')"
-          :disable="addingFueling"
-        />
-        <q-input
-          v-model="newAmount"
-          square
-          filled
-          class="q-mb-sm"
-          :label="$t('fuelingsTable.amount')"
-          :disable="addingFueling"
-        />
-        <q-input
-          v-model="totalPrice"
-          class="q-mb-sm"
-          square
-          filled
-          :label="$t('fuelingsTable.price')"
-          v-if="showPrice"
-          :disable="addingFueling"
-        />
-        <q-input
-          v-model="pricePerLiter"
-          class="q-mb-sm"
-          square
-          filled
-          :label="$t('fuelingsTable.pricePerLiter')"
-          v-if="showPrice"
-          :disable="addingFueling"
-        />
-        <q-checkbox
-          class="full-width"
-          v-model="newFull"
-          :label="$t('fuelingsTable.full')"
-          :disable="addingFueling"
-        />
-        <q-checkbox
-          v-model="newRoute"
-          :label="$t('fuelingsTable.newRoute')"
-          :disable="addingFueling"
-        />
+        <q-form @submit="addFueling" greedy id="form">
+          <dialog-input
+            autofocus
+            v-model="newDate"
+            mask="####-##-##"
+            :label="$t('fuelingsTable.date')"
+            :disable="addingFueling"
+            :placeholder="$t('fuelingsTable.datePlaceholder')"
+          >
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy
+                  cover
+                  transition-show="scale"
+                  transition-hide="scale"
+                >
+                  <q-date
+                    v-model="newDate"
+                    color="secondary"
+                    today-btn
+                    mask="YYYY-MM-DD"
+                    :options="disableFutureDates"
+                  >
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </dialog-input>
+          <dialog-number-input
+            v-model="newMileage"
+            :label="$t('fuelingsTable.mileage')"
+            :disable="addingFueling"
+            step="0.01"
+            :rules="[$rules.required($t('validation.required'))]"
+          />
+          <dialog-number-input
+            v-model="newAmount"
+            :label="$t('fuelingsTable.amount')"
+            :disable="addingFueling"
+            :rules="[$rules.required($t('validation.required'))]"
+          />
+          <dialog-number-input
+            v-model="totalPrice"
+            :label="$t('fuelingsTable.price')"
+            v-if="showPrice"
+            :disable="addingFueling"
+          />
+          <dialog-number-input
+            v-model="pricePerLiter"
+            :label="$t('fuelingsTable.pricePerLiter')"
+            v-if="showPrice"
+            :disable="addingFueling"
+          />
+          <q-checkbox
+            class="full-width"
+            v-model="newFull"
+            :label="$t('fuelingsTable.full')"
+            :disable="addingFueling"
+          />
+          <q-checkbox
+            v-model="newRoute"
+            :label="$t('fuelingsTable.newRoute')"
+            :disable="addingFueling"
+          />
+        </q-form>
       </q-card-section>
       <q-card-actions align="right">
         <q-btn
@@ -68,11 +80,11 @@
           @click="onDialogCancel"
         />
         <q-btn
-          color="primary"
           flat
           :label="$t('fuelingsTable.save')"
           :loading="addingFueling"
-          @click="addFueling"
+          type="submit"
+          form="form"
         />
       </q-card-actions>
     </q-card>
@@ -81,10 +93,16 @@
 
 <script>
 import { ref, computed } from "vue";
-import { useDialogPluginComponent } from "quasar";
+import { useDialogPluginComponent, date } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
+import DialogInput from "./DialogInput.vue";
+import DialogNumberInput from "./DialogNumberInput.vue";
 
 export default {
+  components: {
+    DialogInput,
+    DialogNumberInput,
+  },
   props: {
     vehicleId: Number,
     vehicleName: String,
@@ -97,9 +115,7 @@ export default {
     price: Number,
     showPrice: Boolean,
   },
-
   emits: [...useDialogPluginComponent.emits],
-
   setup(props) {
     const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
       useDialogPluginComponent();
@@ -109,7 +125,6 @@ export default {
       }
       return (pricePerLiter / amount).toFixed(2);
     };
-
     const newDate = ref(props.date);
     const newMileage = ref(props.mileage);
     const newAmount = ref(props.amount);
@@ -119,9 +134,7 @@ export default {
     const newPricePerLiter = ref(
       calcPricePerLiter(newPrice.value, newAmount.value)
     );
-
     const addingFueling = ref(false);
-
     const totalPrice = computed({
       get() {
         return newPrice.value;
@@ -131,7 +144,6 @@ export default {
         newPricePerLiter.value = (newPrice.value / newAmount.value).toFixed(2);
       },
     });
-
     const pricePerLiter = computed({
       get() {
         return newPricePerLiter.value;
@@ -141,7 +153,6 @@ export default {
         newPrice.value = (newPricePerLiter.value * newAmount.value).toFixed(2);
       },
     });
-
     const addFuelingMutation = `
       mutation createFueling($vehicleId: ID!, $amount: Float!, $mileage: Float!, $full: Boolean!, $date: Date, $price: Float, $newRoute: Boolean) {
         createFueling(
@@ -166,7 +177,6 @@ export default {
         }
       }
     `;
-
     async function addFueling() {
       addingFueling.value = true;
       await apiClient
@@ -193,6 +203,11 @@ export default {
       addingFueling.value = false;
     }
 
+    function disableFutureDates(d) {
+      const today = new Date();
+      return date.formatDate(d) <= date.formatDate(today);
+    }
+
     return {
       dialogRef,
       onDialogHide,
@@ -206,6 +221,7 @@ export default {
       pricePerLiter,
       totalPrice,
       addingFueling,
+      disableFutureDates,
     };
   },
 };

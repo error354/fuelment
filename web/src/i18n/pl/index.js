@@ -64,6 +64,7 @@ export default {
     cancel: "Anuluj",
     details: "Szczegóły",
     newRoute: "Nowa trasa",
+    datePlaceholder: "RRRR-MM-DD",
   },
   routesTable: {
     distance: "Dystans",
