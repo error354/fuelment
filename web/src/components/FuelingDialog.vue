@@ -52,9 +52,9 @@
           <dialog-number-input
             v-model="totalPrice"
             :label="$t('fuelingsTable.price')"
-            v-if="showPrice"
+            v-if="showPrice()"
             :rules="
-              isPriceRequired
+              isPriceRequired()
                 ? [$rules.required($t('validation.required'))]
                 : []
             "
@@ -63,9 +63,9 @@
           <dialog-number-input
             v-model="pricePerLiter"
             :label="$t('fuelingsTable.pricePerLiter')"
-            v-if="showPrice"
+            v-if="showPrice()"
             :rules="
-              isPriceRequired
+              isPriceRequired()
                 ? [$rules.required($t('validation.required'))]
                 : []
             "
@@ -149,14 +149,14 @@ export default {
     const addingFueling = ref(false);
     const showCalendar = ref(false);
 
-    const showPrice = (priceSetting) => {
+    const showPrice = () => {
       if (props.priceSetting == "DISABLED") {
         return false;
       }
       return true;
     };
 
-    const isPriceRequired = (priceSetting) => {
+    const isPriceRequired = () => {
       if (props.priceSetting == "REQUIRED") {
         return true;
       }
