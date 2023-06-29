@@ -65,6 +65,10 @@ export default {
     details: "Szczegóły",
     newRoute: "Nowa trasa",
     datePlaceholder: "RRRR-MM-DD",
+    deletingFueling: {
+      title: "Usuwanie tankowania",
+      content: "Czy na pewno chcesz usunąć to tankowanie?",
+    },
   },
   routesTable: {
     distance: "Dystans",
@@ -76,5 +80,9 @@ export default {
   vehicleDetails: {
     settings: "Ustawienia",
     return: "Powrót",
+  },
+  confirmationDialog: {
+    confirm: "Tak",
+    cancel: "Nie",
   },
 };

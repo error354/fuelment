@@ -63,16 +63,12 @@
         >
           <q-tooltip>{{ $t("fuelingsTable.edit") }}</q-tooltip>
         </q-btn>
-        <q-btn
-          round
-          flat
-          color="primary"
-          icon="mdi-delete"
-          size="xs"
+        <DeleteFuelingButton
+          :vehicleId="vehicle.id"
+          :fuelingId="props.row.id"
           v-if="vehicle.canDelete"
-        >
-          <q-tooltip>{{ $t("fuelingsTable.delete") }}</q-tooltip>
-        </q-btn>
+          @fuelingChanged="$emit('fuelingChanged')"
+        />
       </q-td>
     </template>
   </q-table>
@@ -83,6 +79,7 @@ import { useQuasar } from "quasar";
 import { defineComponent, ref } from "vue";
 import { i18n } from "../boot/i18n";
 import RouteDataDialog from "src/components/RouteDataDialog.vue";
+import DeleteFuelingButton from "src/components/DeleteFuelingButton.vue";
 
 const $t = i18n.global.t;
 
@@ -94,26 +91,20 @@ export default defineComponent({
     loading: Boolean,
     pagination: Object,
   },
-  async setup(props) {
+  components: {
+    DeleteFuelingButton,
+  },
+  emits: ["fuelingChanged"],
+  async setup(props, { emit }) {
     const $q = useQuasar();
 
     const showRouteDataDialog = (routeId) =>
-      $q
-        .dialog({
-          component: RouteDataDialog,
-          componentProps: {
-            routeId: routeId,
-          },
-        })
-        .onOk(() => {
-          console.log("OK");
-        })
-        .onCancel(() => {
-          console.log("Cancel");
-        })
-        .onDismiss(() => {
-          console.log("Called on OK or Cancel");
-        });
+      $q.dialog({
+        component: RouteDataDialog,
+        componentProps: {
+          routeId: routeId,
+        },
+      });
 
     const columns = ref([
       {

@@ -65,6 +65,10 @@ export default {
     details: "Details",
     newRoute: "New route",
     datePlaceholder: "YYYY-MM-DD",
+    deletingFueling: {
+      title: "Removing fueling",
+      content: "Are you sure that you want to remove the fueling?",
+    },
   },
   routesTable: {
     distance: "Distance",
@@ -76,5 +80,9 @@ export default {
   vehicleDetails: {
     settings: "Settings",
     return: "Return",
+  },
+  confirmationDialog: {
+    confirm: "Yes",
+    cancel: "No",
   },
 };

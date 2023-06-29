@@ -64,6 +64,7 @@
         :vehicle="vehicle"
         :loading="loadingFuelings"
         :pagination="fuelingsPaginationProps.pagination"
+        @fuelingChanged="getFuelings()"
       />
     </q-tab-panel>
 
