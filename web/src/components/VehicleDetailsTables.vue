@@ -85,7 +85,6 @@ import { useQuasar } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
 import { i18n } from "../boot/i18n";
 import FuelTypeDot from "src/components/FuelTypeDot.vue";
-import FuelingDialog from "src/components/FuelingDialog.vue";
 import VehicleDetailsFuelingsTable from "src/components/VehicleDetailsFuelingsTable.vue";
 import VehicleDetailsRoutesTable from "src/components/VehicleDetailsRoutesTable.vue";
 import { useFuelingDialog } from "src/composables/fuelingDialog";

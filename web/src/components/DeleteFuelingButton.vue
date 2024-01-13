@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { defineComponent, ref } from "vue";
+import { defineComponent } from "vue";
 import { useQuasar } from "quasar";
 import { i18n } from "../boot/i18n";
 import { apiClient, handleErrors } from "src/boot/apiClient";
@@ -34,9 +34,7 @@ export default defineComponent({
   setup(props, { emit }) {
     const $q = useQuasar();
 
-    const deletingFueling = ref(false);
-
-    const showConfirmDialog = () =>
+    const showConfirmDialog = async () =>
       $q
         .dialog({
           component: ConfirmDialog,
@@ -44,12 +42,12 @@ export default defineComponent({
             title: $t("fuelingsTable.deletingFueling.title"),
             content: $t("fuelingsTable.deletingFueling.content"),
             confirmColor: "negative",
-            loading: deletingFueling.value,
           },
         })
-        .onOk(async () => {
+        .onOk(async ({ done }) => {
           await deleteFueling();
           emit("fuelingChanged");
+          done();
         });
 
     const deleteFuelingMutation = `
@@ -62,7 +60,6 @@ export default defineComponent({
       }
     `;
     async function deleteFueling() {
-      deletingFueling.value = true;
       await apiClient
         .executeMutation({
           query: deleteFuelingMutation,
@@ -76,7 +73,6 @@ export default defineComponent({
             handleErrors(response.error);
           }
         });
-      deletingFueling.value = false;
     }
 
     return { showConfirmDialog };

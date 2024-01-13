@@ -21,7 +21,7 @@
           :color="confirmColor"
           flat
           :label="confirmText"
-          :loading="loading"
+          :loading="emitting"
           @click="onDialogOK"
         />
       </q-card-actions>
@@ -30,6 +30,7 @@
 </template>
 
 <script>
+import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { i18n } from "../boot/i18n";
 
@@ -57,15 +58,28 @@ export default {
     content: String,
   },
   emits: [...useDialogPluginComponent.emits],
-  setup() {
-    const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
+  setup(props, { emit }) {
+    const { dialogRef, onDialogHide, onDialogCancel } =
       useDialogPluginComponent();
+
+    const emitting = ref(false);
+
+    const onDialogOK = async () => {
+      emitting.value = true;
+      emit("ok", {
+        done: () => {
+          onDialogCancel();
+          emitting.value = false;
+        },
+      });
+    };
 
     return {
       dialogRef,
       onDialogHide,
       onDialogOK,
       onDialogCancel,
+      emitting,
     };
   },
 };
