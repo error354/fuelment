@@ -9,7 +9,7 @@
         <q-form @submit="addFueling" greedy id="form">
           <dialog-input
             autofocus
-            v-model="newDate"
+            v-model="fuelingDate"
             mask="####-##-##"
             :label="$t('fuelingsTable.date')"
             :disable="addingFueling"
@@ -24,7 +24,7 @@
                   transition-hide="scale"
                 >
                   <q-date
-                    v-model="newDate"
+                    v-model="fuelingDate"
                     color="secondary"
                     today-btn
                     mask="YYYY-MM-DD"
@@ -37,14 +37,14 @@
             </template>
           </dialog-input>
           <dialog-number-input
-            v-model="newMileage"
+            v-model="mileage"
             :label="$t('fuelingsTable.mileage')"
             :disable="addingFueling"
             step="0.01"
             :rules="[$rules.required($t('validation.required'))]"
           />
           <dialog-number-input
-            v-model="newAmount"
+            v-model="amount"
             :label="$t('fuelingsTable.amount')"
             :disable="addingFueling"
             :rules="[$rules.required($t('validation.required'))]"
@@ -73,12 +73,12 @@
           />
           <q-checkbox
             class="full-width"
-            v-model="newFull"
+            v-model="full"
             :label="$t('fuelingsTable.full')"
             :disable="addingFueling"
           />
           <q-checkbox
-            v-model="newRoute"
+            v-model="route"
             :label="$t('fuelingsTable.newRoute')"
             :disable="addingFueling"
           />
@@ -103,85 +103,77 @@
   </q-dialog>
 </template>
 
-<script>
+<script setup>
 import { ref, computed } from "vue";
 import { useDialogPluginComponent, date } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
 import DialogInput from "./DialogInput.vue";
 import DialogNumberInput from "./DialogNumberInput.vue";
 
-export default {
-  components: {
-    DialogInput,
-    DialogNumberInput,
+const props = defineProps({
+  vehicleId: Number,
+  vehicleName: String,
+  title: String,
+  priceSetting: String,
+});
+const fuelingDate = defineModel("date", { type: Date });
+const mileage = defineModel("mileage", { type: Number });
+const amount = defineModel("amount", { type: Number });
+const full = defineModel("full", { type: Boolean });
+const route = defineModel("route", { type: Boolean });
+const price = defineModel("price", { type: Number });
+
+const emit = defineEmits([...useDialogPluginComponent.emits]);
+
+const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
+  useDialogPluginComponent();
+
+const calcPricePerLiter = (pricePerLiter, amount) => {
+  if (!pricePerLiter || !amount) {
+    return null;
+  }
+  return (pricePerLiter / amount).toFixed(2);
+};
+
+const newPricePerLiter = ref(calcPricePerLiter(price.value, amount.value));
+const pricePerLiter = computed({
+  get() {
+    return newPricePerLiter.value;
   },
-  props: {
-    vehicleId: Number,
-    vehicleName: String,
-    title: String,
-    date: Date,
-    mileage: Number,
-    amount: Number,
-    full: Boolean,
-    route: Boolean,
-    price: Number,
-    priceSetting: String,
+  set(newValue) {
+    newPricePerLiter.value = newValue;
+    price.value = (newPricePerLiter.value * amount.value).toFixed(2);
   },
-  emits: [...useDialogPluginComponent.emits],
-  setup(props) {
-    const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
-      useDialogPluginComponent();
-    const calcPricePerLiter = (pricePerLiter, amount) => {
-      if (!pricePerLiter || !amount) {
-        return null;
-      }
-      return (pricePerLiter / amount).toFixed(2);
-    };
-    const newDate = ref(props.date);
-    const newMileage = ref(props.mileage);
-    const newAmount = ref(props.amount);
-    const newFull = ref(props.full);
-    const newRoute = ref(props.route);
-    const newPrice = ref(props.price);
-    const newPricePerLiter = ref(
-      calcPricePerLiter(newPrice.value, newAmount.value)
-    );
-    const addingFueling = ref(false);
-    const showCalendar = ref(false);
+});
 
-    const showPrice = () => {
-      if (props.priceSetting == "DISABLED") {
-        return false;
-      }
-      return true;
-    };
+const addingFueling = ref(false);
+const showCalendar = ref(false);
 
-    const isPriceRequired = () => {
-      if (props.priceSetting == "REQUIRED") {
-        return true;
-      }
-      return false;
-    };
+const showPrice = () => {
+  if (props.priceSetting == "DISABLED") {
+    return false;
+  }
+  return true;
+};
 
-    const totalPrice = computed({
-      get() {
-        return newPrice.value;
-      },
-      set(newValue) {
-        newPrice.value = newValue;
-        newPricePerLiter.value = (newPrice.value / newAmount.value).toFixed(2);
-      },
-    });
-    const pricePerLiter = computed({
-      get() {
-        return newPricePerLiter.value;
-      },
-      set(newValue) {
-        newPricePerLiter.value = newValue;
-        newPrice.value = (newPricePerLiter.value * newAmount.value).toFixed(2);
-      },
-    });
-    const addFuelingMutation = `
+const isPriceRequired = () => {
+  if (props.priceSetting == "REQUIRED") {
+    return true;
+  }
+  return false;
+};
+
+const totalPrice = computed({
+  get() {
+    return price.value;
+  },
+  set(newValue) {
+    price.value = newValue;
+    newPricePerLiter.value = (price.value / amount.value).toFixed(2);
+  },
+});
+
+const addFuelingMutation = `
       mutation createFueling($vehicleId: ID!, $amount: Float!, $mileage: Float!, $full: Boolean!, $date: Date, $price: Float, $newRoute: Boolean) {
         createFueling(
           input: {vehicleId: $vehicleId, amount: $amount, mileage: $mileage, full: $full, date: $date, price: $price, newRoute: $newRoute}
@@ -205,57 +197,36 @@ export default {
         }
       }
     `;
-    async function addFueling() {
-      addingFueling.value = true;
-      await apiClient
-        .executeMutation({
-          query: addFuelingMutation,
-          variables: {
-            vehicleId: props.vehicleId,
-            amount: parseFloat(newAmount.value),
-            mileage: parseFloat(newMileage.value),
-            full: Boolean(newFull.value),
-            date: newDate.value,
-            price: parseFloat(newPrice.value),
-            newRoute: Boolean(newRoute.value),
-          },
-          clearCacheTags: [`vehicle_${props.vehicleId}_fuelings`],
-        })
-        .then((response) => {
-          if (response.error) {
-            handleErrors(response.error);
-          } else {
-            onDialogOK();
-          }
-        });
-      addingFueling.value = false;
-    }
+async function addFueling() {
+  addingFueling.value = true;
+  await apiClient
+    .executeMutation({
+      query: addFuelingMutation,
+      variables: {
+        vehicleId: props.vehicleId,
+        amount: parseFloat(amount.value),
+        mileage: parseFloat(mileage.value),
+        full: Boolean(full.value),
+        date: fuelingDate.value,
+        price: parseFloat(price.value),
+        newRoute: Boolean(route.value),
+      },
+      clearCacheTags: [`vehicle_${props.vehicleId}_fuelings`],
+    })
+    .then((response) => {
+      if (response.error) {
+        handleErrors(response.error);
+      } else {
+        onDialogOK();
+      }
+    });
+  addingFueling.value = false;
+}
 
-    function disableFutureDates(d) {
-      const today = new Date();
-      return date.formatDate(d) <= date.formatDate(today);
-    }
-
-    return {
-      dialogRef,
-      onDialogHide,
-      onDialogCancel,
-      addFueling,
-      newDate,
-      newMileage,
-      newAmount,
-      newFull,
-      newRoute,
-      pricePerLiter,
-      totalPrice,
-      addingFueling,
-      disableFutureDates,
-      showCalendar,
-      showPrice,
-      isPriceRequired,
-    };
-  },
-};
+function disableFutureDates(d) {
+  const today = new Date();
+  return date.formatDate(d) <= date.formatDate(today);
+}
 </script>
 
 <style scoped>
