@@ -44,6 +44,13 @@
       size="md"
       @click="showFuelingsFiltersDialog()"
     >
+      <q-badge
+        color="secondary"
+        rounded
+        floating
+        class="q-mr-sm q-mt-sm"
+        v-if="Object.keys(fuelingsFilters).length"
+      />
       <q-tooltip self="center middle">{{
         $t("fuelingsTable.filter")
       }}</q-tooltip>
@@ -126,11 +133,17 @@ export default defineComponent({
     const tab = ref("fuelings");
 
     const { showAddFuelingDialog } = useFuelingDialog(context);
+    const fuelingsFilters = ref(null);
 
     const showFuelingsFiltersDialog = () => {
       $q.dialog({
         component: FuelingsFiltersDialog,
-        componentProps: {},
+        componentProps: {
+          dateFrom: fuelingsFilters?.value?.date?.from,
+          dateTo: fuelingsFilters?.value?.date?.to,
+          mileageFrom: fuelingsFilters?.value?.mileage?.from,
+          mileageTo: fuelingsFilters?.value?.mileage?.to,
+        },
       }).onOk(async (filters) => {
         await getFuelings(
           {
@@ -244,6 +257,11 @@ export default defineComponent({
       filters = null
     ) {
       loadingFuelings.value = true;
+      fuelingsFilters.value = filters;
+      console.log(filters);
+      console.log(fuelingsFilters.value);
+      console.log(!!fuelingsFilters.value);
+      console.log(Boolean(fuelingsFilters.value));
       await apiClient
         .executeQuery({
           query: getFuelingsQuery,
@@ -312,6 +330,7 @@ export default defineComponent({
       routes,
       showAddFuelingDialog,
       showFuelingsFiltersDialog,
+      fuelingsFilters,
     };
   },
 });

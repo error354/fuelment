@@ -64,17 +64,17 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, defineModel } from "vue";
 import { useDialogPluginComponent, date } from "quasar";
 import DateInput from "./DateInput.vue";
 import DialogNumberInput from "./DialogNumberInput.vue";
 
 const emit = defineEmits(["applyFilters", ...useDialogPluginComponent.emits]);
 
-const dateFrom = ref(null);
-const dateTo = ref(null);
-const mileageFrom = ref(null);
-const mileageTo = ref(null);
+const dateFrom = defineModel("dateFrom");
+const dateTo = defineModel("dateTo");
+const mileageFrom = defineModel("mileageFrom");
+const mileageTo = defineModel("mileageTo");
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
