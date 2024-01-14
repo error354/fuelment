@@ -49,7 +49,7 @@
         rounded
         floating
         class="q-mr-sm q-mt-sm"
-        v-if="Object.keys(fuelingsFilters).length"
+        v-if="fuelingsFilters && Object.keys(fuelingsFilters).length"
       />
       <q-tooltip self="center middle">{{
         $t("fuelingsTable.filter")
@@ -129,11 +129,11 @@ export default defineComponent({
     const vehicle = ref({});
     const loadingFuelings = ref(false);
     const loadingRoutes = ref(false);
-    const loadingVehicle = ref({});
+    const loadingVehicle = ref(false);
     const tab = ref("fuelings");
 
     const { showAddFuelingDialog } = useFuelingDialog(context);
-    const fuelingsFilters = ref(null);
+    const fuelingsFilters = ref({});
 
     const showFuelingsFiltersDialog = () => {
       $q.dialog({
