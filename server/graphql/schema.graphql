@@ -5,6 +5,16 @@ scalar DateTime
 "A date string with format `Y-m-d`, e.g. `2011-05-23`."
 scalar Date @scalar(class: "Nuwave\\Lighthouse\\Schema\\Types\\Scalars\\Date")
 
+input DateRange {
+  from: Date!
+  to: Date!
+}
+
+input FloatRange {
+  from: Float!
+  to: Float!
+}
+
 #import auth.graphql
 #import user.graphql
 #import role.graphql

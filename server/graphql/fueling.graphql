@@ -38,8 +38,25 @@ type Fueling {
 
 extend type Query {
     fueling(id: ID @eq): Fueling @find
-    fuelings(vehicleId: ID! @where(key: "vehicle_id")): [Fueling!]!
-        @paginate(defaultCount: 30, maxCount: 50)
+    fuelings(
+        vehicleId: ID! @where(key: "vehicle_id")
+        filter: FuelingsFilters
+    ): [Fueling!]! @paginate(defaultCount: 30, maxCount: 50)
+}
+
+input FuelingsFilters {
+    date: FuelingDateFilter
+    mileage: FuelingMileageFilter
+}
+
+input FuelingDateFilter {
+    from: Date @where(key: "date" operator: ">=")
+    to: Date @where(key: "date" operator: "<=")
+}
+
+input FuelingMileageFilter {
+    from: Float @where(key: "mileage" operator: ">=")
+    to: Float @where(key: "mileage" operator: "<=")
 }
 
 input CreateFuelingInput @validator {
@@ -61,8 +78,7 @@ input UpdateFuelingInput @validator {
 }
 
 extend type Mutation @guard {
-    createFueling(input: CreateFuelingInput! @spread): Fueling
-        @create
+    createFueling(input: CreateFuelingInput! @spread): Fueling @create
     updateFueling(id: ID!, input: UpdateFuelingInput! @spread): Fueling
         @update
         @can(ability: "update", injectArgs: true)

@@ -22,7 +22,6 @@
     </q-btn>
     <FuelTypeDot :fuel="vehicle.fuel" />
     <span class="text-h6 text-black">{{ vehicle.name }}</span>
-    <q-space />
     <q-btn
       round
       flat
@@ -34,6 +33,19 @@
     >
       <q-tooltip self="center middle">{{
         $t("vehicleDetails.settings")
+      }}</q-tooltip>
+    </q-btn>
+    <q-space />
+    <q-btn
+      round
+      flat
+      color="primary"
+      icon="mdi-filter"
+      size="md"
+      @click="showFuelingsFiltersDialog()"
+    >
+      <q-tooltip self="center middle">{{
+        $t("fuelingsTable.filter")
       }}</q-tooltip>
     </q-btn>
     <q-btn
@@ -63,7 +75,7 @@
         :fuelings="fuelings"
         :vehicle="vehicle"
         :loading="loadingFuelings"
-        :pagination="fuelingsPaginationProps.pagination"
+        :pagination="fuelingsPaginationProps"
         @fuelingChanged="getFuelings()"
       />
     </q-tab-panel>
@@ -73,7 +85,7 @@
         :routes="routes"
         :vehicle="vehicle"
         :loading="loadingRoutes"
-        :pagination="routesPaginationProps.pagination"
+        :pagination="routesPaginationProps"
       />
     </q-tab-panel>
   </q-tab-panels>
@@ -87,6 +99,7 @@ import { i18n } from "../boot/i18n";
 import FuelTypeDot from "src/components/FuelTypeDot.vue";
 import VehicleDetailsFuelingsTable from "src/components/VehicleDetailsFuelingsTable.vue";
 import VehicleDetailsRoutesTable from "src/components/VehicleDetailsRoutesTable.vue";
+import FuelingsFiltersDialog from "src/components/FuelingsFiltersDialog.vue";
 import { useFuelingDialog } from "src/composables/fuelingDialog";
 
 const $t = i18n.global.t;
@@ -114,12 +127,29 @@ export default defineComponent({
 
     const { showAddFuelingDialog } = useFuelingDialog(context);
 
+    const showFuelingsFiltersDialog = () => {
+      $q.dialog({
+        component: FuelingsFiltersDialog,
+        componentProps: {},
+      }).onOk(async (filters) => {
+        await getFuelings(
+          {
+            page: 1,
+            rowsPerPage: fuelingsPaginationProps.value.rowsPerPage,
+            rowsNumber: fuelingsPaginationProps.value.rowsNumber,
+          },
+          filters
+        );
+      });
+    };
+
     const getFuelingsQuery = `
-      query getFuelings ($vehicleId: ID! $page: Int, $first: Int) {
+      query getFuelings ($vehicleId: ID! $page: Int, $first: Int, $filter: FuelingsFilters) {
         fuelings(
           vehicleId: $vehicleId
           page: $page
           first: $first
+          filter: $filter
         ) {
           data {
             id
@@ -198,30 +228,30 @@ export default defineComponent({
     }
 
     const fuelingsPaginationProps = ref({
-      pagination: {
-        page: 1,
-        rowsPerPage: 20,
-        rowsNumber: 0,
-      },
+      page: 1,
+      rowsPerPage: 20,
+      rowsNumber: 0,
     });
 
     const routesPaginationProps = ref({
-      pagination: {
-        page: 1,
-        rowsPerPage: 20,
-        rowsNumber: 0,
-      },
+      page: 1,
+      rowsPerPage: 20,
+      rowsNumber: 0,
     });
 
-    async function getFuelings(pagination = fuelingsPaginationProps.value) {
+    async function getFuelings(
+      pagination = fuelingsPaginationProps.value,
+      filters = null
+    ) {
       loadingFuelings.value = true;
       await apiClient
         .executeQuery({
           query: getFuelingsQuery,
           variables: {
             vehicleId: props.vehicleId,
-            page: pagination.pagination.page,
+            page: pagination.page,
             first: 20,
+            filter: filters,
           },
           tags: [`vehicle_${props.vehicleId}_fuelings`],
         })
@@ -230,9 +260,9 @@ export default defineComponent({
             handleErrors(response.error);
           }
           const fuelingsData = response.data.fuelings.data;
-          fuelingsPaginationProps.value.pagination.rowsNumber =
+          fuelingsPaginationProps.value.rowsNumber =
             response.data.fuelings.paginatorInfo.total;
-          fuelingsPaginationProps.value.pagination.page =
+          fuelingsPaginationProps.value.page =
             response.data.fuelings.paginatorInfo.currentPage;
           fuelings.value = fuelingsData;
         });
@@ -246,7 +276,7 @@ export default defineComponent({
           query: getRoutesQuery,
           variables: {
             vehicleId: props.vehicleId,
-            page: pagination.pagination.page,
+            page: pagination.page,
             first: 20,
           },
         })
@@ -255,9 +285,9 @@ export default defineComponent({
             handleErrors(response.error);
           }
           const routesData = response.data.routes.data;
-          routesPaginationProps.value.pagination.rowsNumber =
+          routesPaginationProps.value.rowsNumber =
             response.data.routes.paginatorInfo.total;
-          routesPaginationProps.value.pagination.page =
+          routesPaginationProps.value.page =
             response.data.routes.paginatorInfo.currentPage;
           routes.value = routesData;
         });
@@ -281,6 +311,7 @@ export default defineComponent({
       loadingRoutes,
       routes,
       showAddFuelingDialog,
+      showFuelingsFiltersDialog,
     };
   },
 });
