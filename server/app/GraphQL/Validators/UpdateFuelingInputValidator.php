@@ -17,11 +17,7 @@ class UpdateFuelingInputValidator extends Validator
      */
     public function rules(): array
     {
-        $query = request()['query'];
-        $fueling_id = Str::betweenFirst($query, 'id: ', ',');
-        if (!is_numeric($fueling_id)) {
-            $fueling_id = Str::betweenFirst($query, 'id: ', ')');
-        }
+        $fueling_id = $this->arg('id');
         $fueling = Fueling::find($fueling_id);
         $vehicle_id = $fueling->vehicle->id;
 
