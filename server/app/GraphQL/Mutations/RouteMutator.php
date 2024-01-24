@@ -67,9 +67,9 @@ class RouteMutator
       ]);
     };
     $prevRoute = $route->getPrevRoute();
-    if (!$prevRoute) {
+    if (!$prevRoute && !$route->fuelings === []) {
       throw ValidationException::withMessages([
-        'id' => ['The first fueling of a vehicle cannot be deleted'],
+        'id' => ['The first route of a vehicle cannot be deleted'],
       ]);
     }
     foreach ($route->fuelings as $key => $fueling) {
