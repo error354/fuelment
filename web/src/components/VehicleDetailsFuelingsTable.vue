@@ -182,8 +182,9 @@ const columns = ref([
   {
     name: "pricePerLiter",
     label: $t("fuelingsTable.pricePerLiter"),
+    required: true,
   },
-  { name: "route", label: "Trasa", align: "center" },
+  { name: "route", label: "Trasa", align: "center", required: true },
   { name: "actions", label: "Akcje", align: "center" },
 ]);
 
@@ -196,7 +197,7 @@ const pricePerLiter = (price, amount) => {
 };
 
 const showActionsColumn = ref(props.vehicle.canEdit || props.vehicle.canDelete);
-const visibleColumns = ref(["pricePerLiter, route"]);
+const visibleColumns = ref([]);
 if (showActionsColumn.value) {
   visibleColumns.value.push("actions");
 }
