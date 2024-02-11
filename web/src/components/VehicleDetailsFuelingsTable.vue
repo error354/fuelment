@@ -8,7 +8,7 @@
     :rows="props.fuelings"
     :visible-columns="visibleColumns"
     :no-data-label="$t('fuelingsTable.empty')"
-    v-model:pagination="props.pagination"
+    v-model:pagination="pagination"
     :rows-per-page-options="[5, 10, 15, 20, 25, 50]"
     icon-first-page="first_page"
     icon-last-page="last_page"
@@ -51,12 +51,15 @@
           v-if="vehicle.canEdit"
           @click="
             showEditFuelingDialog(
+              props.row.id,
               vehicle.name,
+              vehicle.priceSetting,
+              $t('fuelingsTable.editingDialogTitle'),
               props.row.date,
               props.row.mileage,
               props.row.amount,
               props.row.full,
-              showPrice(vehicle.priceSetting),
+              false,
               props.row.price
             )
           "
@@ -74,106 +77,127 @@
   </q-table>
 </template>
 
-<script>
+<script setup>
 import { useQuasar } from "quasar";
-import { defineComponent, ref } from "vue";
+import { toRefs, ref } from "vue";
 import { i18n } from "../boot/i18n";
 import RouteDataDialog from "src/components/RouteDataDialog.vue";
 import DeleteFuelingButton from "src/components/DeleteFuelingButton.vue";
+import EditFuelingDialog from "src/components/EditFuelingDialog.vue";
 
 const $t = i18n.global.t;
 
-export default defineComponent({
-  name: "VehicleDetailsFuelings",
-  props: {
-    fuelings: Array,
-    vehicle: Object,
-    loading: Boolean,
-    pagination: Object,
-  },
-  components: {
-    DeleteFuelingButton,
-  },
-  emits: ["fuelingChanged"],
-  async setup(props, { emit }) {
-    const $q = useQuasar();
-
-    const showRouteDataDialog = (routeId) =>
-      $q.dialog({
-        component: RouteDataDialog,
-        componentProps: {
-          routeId: routeId,
-        },
-      });
-
-    const columns = ref([
-      {
-        name: "date",
-        label: $t("fuelingsTable.date"),
-        field: "date",
-        required: true,
-      },
-      {
-        name: "mileage",
-        label: $t("fuelingsTable.mileage"),
-        field: "mileage",
-        required: true,
-      },
-      {
-        name: "amount",
-        label: $t("fuelingsTable.amount"),
-        field: "amount",
-        required: true,
-      },
-      {
-        name: "full",
-        label: $t("fuelingsTable.full"),
-        field: "full",
-        required: true,
-        align: "center",
-      },
-      {
-        name: "fuelConsumption",
-        label: $t("fuelingsTable.fuelConsumption"),
-        field: "fuelConsumption",
-        required: true,
-      },
-      {
-        name: "price",
-        label: $t("fuelingsTable.price"),
-        field: "price",
-        required: true,
-      },
-      {
-        name: "pricePerLiter",
-        label: $t("fuelingsTable.pricePerLiter"),
-      },
-      { name: "route", label: "Trasa", align: "center" },
-      { name: "actions", label: "Akcje", align: "center" },
-    ]);
-
-    const pricePerLiter = (price, amount) => {
-      let result = (price / amount).toFixed(2);
-      if (result == 0) {
-        result = null;
-      }
-      return result;
-    };
-
-    const showActionsColumn = ref(
-      props.vehicle.canEdit || props.vehicle.canDelete
-    );
-    const visibleColumns = ref(["pricePerLiter, route"]);
-    if (showActionsColumn.value) {
-      visibleColumns.value.push("actions");
-    }
-
-    return {
-      columns,
-      pricePerLiter,
-      props,
-      showRouteDataDialog,
-    };
-  },
+const props = defineProps({
+  fuelings: Array,
+  vehicle: Object,
+  loading: Boolean,
+  pagination: Object,
 });
+
+const { pagination } = toRefs(props);
+
+const emit = defineEmits(["fuelingChanged"]);
+
+const $q = useQuasar();
+
+const showEditFuelingDialog = (
+  fuelingId,
+  vehicleName,
+  priceSetting,
+  title,
+  fuelingDate,
+  mileage,
+  amount,
+  full,
+  route,
+  price
+) =>
+  $q
+    .dialog({
+      component: EditFuelingDialog,
+      componentProps: {
+        fuelingId: fuelingId,
+        vehicle: props.vehicle,
+        priceSetting: priceSetting,
+        title: title,
+        fuelingDate: fuelingDate,
+        mileage: mileage,
+        amount: amount,
+        full: full,
+        route: route,
+        price: price,
+      },
+    })
+    .onOk(() => {
+      console.log("ok");
+      emit("fuelingChanged");
+    });
+
+const showRouteDataDialog = (routeId) =>
+  $q.dialog({
+    component: RouteDataDialog,
+    componentProps: {
+      routeId: routeId,
+    },
+  });
+
+const columns = ref([
+  {
+    name: "date",
+    label: $t("fuelingsTable.date"),
+    field: "date",
+    required: true,
+  },
+  {
+    name: "mileage",
+    label: $t("fuelingsTable.mileage"),
+    field: "mileage",
+    required: true,
+  },
+  {
+    name: "amount",
+    label: $t("fuelingsTable.amount"),
+    field: "amount",
+    required: true,
+  },
+  {
+    name: "full",
+    label: $t("fuelingsTable.full"),
+    field: "full",
+    required: true,
+    align: "center",
+  },
+  {
+    name: "fuelConsumption",
+    label: $t("fuelingsTable.fuelConsumption"),
+    field: "fuelConsumption",
+    required: true,
+  },
+  {
+    name: "price",
+    label: $t("fuelingsTable.price"),
+    field: "price",
+    required: true,
+  },
+  {
+    name: "pricePerLiter",
+    label: $t("fuelingsTable.pricePerLiter"),
+  },
+  { name: "route", label: "Trasa", align: "center" },
+  { name: "actions", label: "Akcje", align: "center" },
+]);
+
+const pricePerLiter = (price, amount) => {
+  let result = (price / amount).toFixed(2);
+  if (result == 0) {
+    result = null;
+  }
+  return result;
+};
+
+const showActionsColumn = ref(props.vehicle.canEdit || props.vehicle.canDelete);
+const visibleColumns = ref(["pricePerLiter, route"]);
+if (showActionsColumn.value) {
+  visibleColumns.value.push("actions");
+}
 </script>

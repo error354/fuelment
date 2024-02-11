@@ -68,7 +68,7 @@
           vehicle.name,
           vehicle.priceSetting,
           $t('fuelingsTable.addingDialogTitle')
-        ).onOk(getFuelings)
+        )
       "
     >
       <q-tooltip self="center middle">{{ $t("fuelingsTable.add") }}</q-tooltip>
@@ -83,7 +83,7 @@
         :vehicle="vehicle"
         :loading="loadingFuelings"
         :pagination="fuelingsPaginationProps"
-        @fuelingChanged="getFuelings()"
+        @fuelingChanged="fuelingChanged()"
       />
     </q-tab-panel>
 
@@ -154,6 +154,17 @@ export default defineComponent({
           filters
         );
       });
+    };
+
+    const fuelingChanged = async (filters) => {
+      await getFuelings(
+        {
+          page: 1,
+          rowsPerPage: fuelingsPaginationProps.value.rowsPerPage,
+          rowsNumber: fuelingsPaginationProps.value.rowsNumber,
+        },
+        filters
+      );
     };
 
     const getFuelingsQuery = `
@@ -331,6 +342,7 @@ export default defineComponent({
       showAddFuelingDialog,
       showFuelingsFiltersDialog,
       fuelingsFilters,
+      fuelingChanged,
     };
   },
 });
