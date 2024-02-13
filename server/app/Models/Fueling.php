@@ -38,6 +38,15 @@ class Fueling extends Model
         return $this->belongsTo(Route::class);
     }
 
+    public function isFirstOfRoute($fueling = null)
+    {
+        $fueling ??= $this;
+        if ($fueling->route && $fueling->id === $fueling->route->getFirstFueling()->id) {
+            return true;
+        }
+        return false;
+    }
+
     public function isLastOfRoute($fueling = null)
     {
         $fueling ??= $this;
@@ -125,6 +134,38 @@ class Fueling extends Model
             } else {
                 $route = $fueling->getPrevFueling()->route;
                 $fueling->route()->associate($route);
+            }
+            unset($fueling->newRoute);
+        });
+
+        static::updating(function ($fueling) {
+            if ($fueling->newRoute && !$fueling->isFirstOfRoute()) {
+                unset($fueling->newRoute);
+                $old_route_id = $fueling->route->id;
+                $newRoute = new Route;
+                $vehicle = Vehicle::find($fueling->vehicle->id);
+                $vehicle->routes()->saveQuietly($newRoute);
+                $temp_fueling = $fueling;
+                while ($temp_fueling?->route?->id === $old_route_id) {
+                    $temp_fueling->route()->associate($newRoute);
+                    $temp_fueling->saveQuietly();
+                    $temp_fueling = $temp_fueling->getNextFueling();
+                }
+                $old_route = Route::find($old_route_id);
+                if (!count($old_route->fuelings)) {
+                    $route->delete();
+                }
+            } 
+            else if (!$fueling->newRoute && $fueling->isFirstOfRoute() && $fueling->route->getPrevRoute()) {
+                unset($fueling->newRoute);
+                $old_route = $fueling->route;
+                $old_routes_fuelings = $old_route->fuelings;
+                $prev_route = $fueling->route->getPrevRoute();
+                foreach ($old_routes_fuelings as &$old_routes_fueling) {
+                    $old_routes_fueling->route()->associate($prev_route);
+                    $old_routes_fueling->saveQuietly();
+                }
+                $old_route->delete();
             }
             unset($fueling->newRoute);
         });
