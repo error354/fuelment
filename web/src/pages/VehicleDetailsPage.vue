@@ -20,31 +20,13 @@
   </q-page>
 </template>
 
-<script>
-import { defineComponent, ref } from "vue";
+<script setup>
 import { useRoute } from "vue-router";
 import VehicleDataList from "../components/VehicleDataList.vue";
 import VehicleDetailsTables from "../components/VehicleDetailsTables.vue";
 import VehicleDetailsTablesLoadingSkeleton from "../components/VehicleDetailsTablesLoadingSkeleton.vue";
-import { i18n } from "../boot/i18n";
 
-const $t = i18n.global.t;
-
-export default defineComponent({
-  name: "VehicleDetailsPage",
-  components: {
-    VehicleDataList,
-    VehicleDetailsTables,
-    VehicleDetailsTablesLoadingSkeleton,
-  },
-  setup() {
-    const route = useRoute();
-
-    return {
-      route,
-    };
-  },
-});
+const route = useRoute();
 </script>
 
 <style scoped>
