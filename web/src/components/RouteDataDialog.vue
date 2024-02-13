@@ -76,6 +76,7 @@ export default defineComponent({
           variables: {
             routeId: props.routeId,
           },
+          tags: [`route`],
         })
         .then((response) => {
           if (response.error) {

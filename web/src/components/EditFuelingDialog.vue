@@ -82,7 +82,7 @@ async function saveFueling(data) {
         price: parseFloat(data.price),
         newRoute: Boolean(data.route),
       },
-      clearCacheTags: [`vehicle_${props.vehicle.id}_fuelings`],
+      clearCacheTags: [`vehicle_${props.vehicle.id}_fuelings`, `route`],
     })
     .then((response) => {
       if (response.error) {

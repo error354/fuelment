@@ -81,7 +81,7 @@ async function addFueling(data) {
         price: parseFloat(data.price),
         newRoute: Boolean(data.route),
       },
-      clearCacheTags: [`vehicle_${props.vehicleId}_fuelings`],
+      clearCacheTags: [`vehicle_${props.vehicleId}_fuelings`, `route`],
     })
     .then((response) => {
       if (response.error) {
