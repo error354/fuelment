@@ -256,12 +256,6 @@ export default defineComponent({
       loadingVehicle.value = false;
     }
 
-    const routesPaginationProps = ref({
-      page: 1,
-      rowsPerPage: 20,
-      rowsNumber: 0,
-    });
-
     async function getFuelings(
       pagination = fuelingsPaginationProps.value,
       filters = null
@@ -342,13 +336,23 @@ export default defineComponent({
     );
 
     const fuelingsPaginationProps = ref({
-      page: Number(route.query.page),
-      rowsPerPage: Number($q.localStorage.getItem("rowsPerPage")) || 20,
+      page: Number(route.query.fuelingsPage),
+      rowsPerPage: Number($q.localStorage.getItem("fuelingsRowsPerPage")) || 20,
       rowsNumber: 0,
     });
+    const routesPaginationProps = ref({
+      page: Number(route.query.routesPage),
+      rowsPerPage: Number($q.localStorage.getItem("routesRowsPerPage")) || 20,
+      rowsNumber: 0,
+    });
+
     $q.localStorage.set(
-      "rowsPerPage",
+      "fuelingsRowsPerPage",
       fuelingsPaginationProps.value.rowsPerPage
+    );
+    $q.localStorage.set(
+      "routesRowsPerPage",
+      routesPaginationProps.value.rowsPerPage
     );
 
     const tabChanged = () => {
