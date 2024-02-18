@@ -7,6 +7,7 @@
     indicator-color="primary"
     align="right"
     narrow-indicator
+    @update:model-value="tabChanged"
   >
     <q-btn
       round
@@ -101,6 +102,7 @@
 <script>
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
+import { useRoute } from "vue-router";
 import { apiClient, handleErrors } from "src/boot/apiClient";
 import { i18n } from "../boot/i18n";
 import FuelTypeDot from "src/components/FuelTypeDot.vue";
@@ -108,6 +110,7 @@ import VehicleDetailsFuelingsTable from "src/components/VehicleDetailsFuelingsTa
 import VehicleDetailsRoutesTable from "src/components/VehicleDetailsRoutesTable.vue";
 import FuelingsFiltersDialog from "src/components/FuelingsFiltersDialog.vue";
 import { useFuelingDialog } from "src/composables/fuelingDialog";
+import { useUrlHelper } from "src/composables/urlHelper";
 
 const $t = i18n.global.t;
 
@@ -123,6 +126,8 @@ export default defineComponent({
   },
   async setup(props, context) {
     const $q = useQuasar();
+    const route = useRoute();
+    const urlHelper = useUrlHelper();
 
     const fuelings = ref([]);
     const routes = ref([]);
@@ -130,7 +135,7 @@ export default defineComponent({
     const loadingFuelings = ref(false);
     const loadingRoutes = ref(false);
     const loadingVehicle = ref(false);
-    const tab = ref("fuelings");
+    const tab = route.query.tab ? ref(route.query.tab) : ref("fuelings");
 
     const { showAddFuelingDialog } = useFuelingDialog(context);
     const fuelingsFilters = ref({});
@@ -251,12 +256,6 @@ export default defineComponent({
       loadingVehicle.value = false;
     }
 
-    const fuelingsPaginationProps = ref({
-      page: 1,
-      rowsPerPage: 20,
-      rowsNumber: 0,
-    });
-
     const routesPaginationProps = ref({
       page: 1,
       rowsPerPage: 20,
@@ -323,6 +322,43 @@ export default defineComponent({
       loadingRoutes.value = false;
     }
 
+    const getOtherTab = () => {
+      if (route.query.tab === "fuelings") return "routes";
+      return "fuelings";
+    };
+
+    const setQueryParams = (fuelingsPage, routesPage, tab) => {
+      urlHelper.setQueryParams({
+        fuelingsPage: fuelingsPage,
+        routesPage: routesPage,
+        tab: tab,
+      });
+    };
+
+    setQueryParams(
+      route.query.fuelingsPage || 1,
+      route.query.routesPage || 1,
+      route.query.tab || "fuelings"
+    );
+
+    const fuelingsPaginationProps = ref({
+      page: Number(route.query.page),
+      rowsPerPage: Number($q.localStorage.getItem("rowsPerPage")) || 20,
+      rowsNumber: 0,
+    });
+    $q.localStorage.set(
+      "rowsPerPage",
+      fuelingsPaginationProps.value.rowsPerPage
+    );
+
+    const tabChanged = () => {
+      setQueryParams(
+        route.query.fuelingsPage,
+        route.query.routesPage,
+        getOtherTab()
+      );
+    };
+
     await getVehicle();
     getFuelings();
     getRoutes();
@@ -343,6 +379,7 @@ export default defineComponent({
       showFuelingsFiltersDialog,
       fuelingsFilters,
       fuelingChanged,
+      tabChanged,
     };
   },
 });
