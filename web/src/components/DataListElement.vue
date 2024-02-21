@@ -26,8 +26,11 @@ export default {
 
 <style lang="scss" scoped>
 .data-row {
-  border-bottom: 1px $grey-13 solid;
   transition: background-color 0.2s;
+}
+
+.col-12:not(:last-child) > .data-row {
+  border-bottom: 1px $grey-13 solid;
 }
 
 .data-row:hover {
