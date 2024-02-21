@@ -44,6 +44,7 @@
       icon="mdi-filter"
       size="md"
       @click="showFuelingsFiltersDialog()"
+      v-if="tab === 'fuelings'"
     >
       <q-badge
         color="secondary"
@@ -140,7 +141,25 @@ export default defineComponent({
     const tab = route.query.tab ? ref(route.query.tab) : ref("fuelings");
 
     const { showAddFuelingDialog } = useFuelingDialog(context);
-    const fuelingsFilters = ref({});
+
+    const queryParamsToFilters = (
+      dateTo = route.query.dateTo,
+      dateFrom = route.query.dateFrom,
+      mileageTo = Number(route.query.mileageTo),
+      mileageFrom = Number(route.query.mileageFrom)
+    ) => {
+      return {
+        date: {
+          to: dateTo,
+          from: dateFrom,
+        },
+        mileage: {
+          to: mileageTo,
+          from: mileageFrom,
+        },
+      };
+    };
+    const fuelingsFilters = ref(queryParamsToFilters());
 
     const showFuelingsFiltersDialog = () => {
       $q.dialog({
@@ -152,6 +171,12 @@ export default defineComponent({
           mileageTo: fuelingsFilters?.value?.mileage?.to,
         },
       }).onOk(async (filters) => {
+        setQueryParams(
+          route.query.fuelingsPage || 1,
+          route.query.routesPage || 1,
+          route.query.tab || "fuelings",
+          filters
+        );
         await getFuelings(
           {
             page: 1,
@@ -260,7 +285,7 @@ export default defineComponent({
 
     async function getFuelings(
       pagination = fuelingsPaginationProps.value,
-      filters = null
+      filters = fuelingsFilters.value
     ) {
       loadingFuelings.value = true;
       fuelingsFilters.value = filters;
@@ -319,18 +344,23 @@ export default defineComponent({
       return "fuelings";
     };
 
-    const setQueryParams = (fuelingsPage, routesPage, tab) => {
+    const setQueryParams = (fuelingsPage, routesPage, tab, filters) => {
       urlHelper.setQueryParams({
         fuelingsPage: fuelingsPage,
         routesPage: routesPage,
         tab: tab,
+        dateFrom: filters.date?.from,
+        dateTo: filters.date?.to,
+        mileageFrom: filters.mileage?.from,
+        mileageTo: filters.mileage?.to,
       });
     };
 
     setQueryParams(
       route.query.fuelingsPage || 1,
       route.query.routesPage || 1,
-      route.query.tab || "fuelings"
+      route.query.tab || "fuelings",
+      queryParamsToFilters()
     );
 
     const fuelingsPaginationProps = ref({
@@ -357,7 +387,8 @@ export default defineComponent({
       setQueryParams(
         route.query.fuelingsPage,
         route.query.routesPage,
-        getOtherTab()
+        getOtherTab(),
+        queryParamsToFilters()
       );
     };
 
