@@ -12,7 +12,7 @@
     :rows-per-page-options="[5, 10, 15, 20, 25, 50]"
     icon-first-page="first_page"
     icon-last-page="last_page"
-    @request="$emit('pageChanged')"
+    @request="$emit('paginationChanged', $event)"
   >
     <template v-slot:body-cell-full="props">
       <q-td :props="props">

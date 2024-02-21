@@ -84,7 +84,8 @@
         :vehicle="vehicle"
         :loading="loadingFuelings"
         :pagination="fuelingsPaginationProps"
-        @fuelingChanged="fuelingChanged()"
+        @fuelingChanged="fuelingChanged"
+        @paginationChanged="fuelingsPaginationChanged"
       />
     </q-tab-panel>
 
@@ -94,6 +95,7 @@
         :vehicle="vehicle"
         :loading="loadingRoutes"
         :pagination="routesPaginationProps"
+        @paginationChanged="routesPaginationChanged"
       />
     </q-tab-panel>
   </q-tab-panels>
@@ -262,17 +264,13 @@ export default defineComponent({
     ) {
       loadingFuelings.value = true;
       fuelingsFilters.value = filters;
-      console.log(filters);
-      console.log(fuelingsFilters.value);
-      console.log(!!fuelingsFilters.value);
-      console.log(Boolean(fuelingsFilters.value));
       await apiClient
         .executeQuery({
           query: getFuelingsQuery,
           variables: {
             vehicleId: props.vehicleId,
             page: pagination.page,
-            first: 20,
+            first: pagination.rowsPerPage,
             filter: filters,
           },
           tags: [`vehicle_${props.vehicleId}_fuelings`],
@@ -363,6 +361,38 @@ export default defineComponent({
       );
     };
 
+    const fuelingsPaginationChanged = (e) => {
+      fuelingsPaginationProps.value.page = e.pagination.page;
+      fuelingsPaginationProps.value.rowsPerPage = e.pagination.rowsPerPage;
+      fuelingsPaginationProps.value.rowsNumber = e.pagination.rowsNumber;
+      $q.localStorage.set(
+        "fuelingsRowsPerPage",
+        fuelingsPaginationProps.value.rowsPerPage
+      );
+      setQueryParams(
+        fuelingsPaginationProps.value.page || 1,
+        route.query.routesPage || 1,
+        route.query.tab || "fuelings"
+      );
+      getFuelings();
+    };
+
+    const routesPaginationChanged = (e) => {
+      routesPaginationProps.value.page = e.pagination.page;
+      routesPaginationProps.value.rowsPerPage = e.pagination.rowsPerPage;
+      routesPaginationProps.value.rowsNumber = e.pagination.rowsNumber;
+      $q.localStorage.set(
+        "routesRowsPerPage",
+        routesPaginationProps.value.rowsPerPage
+      );
+      setQueryParams(
+        routesPaginationProps.value.page || 1,
+        route.query.routesPage || 1,
+        route.query.tab || "routes"
+      );
+      getRoutes();
+    };
+
     await getVehicle();
     getFuelings();
     getRoutes();
@@ -384,6 +414,8 @@ export default defineComponent({
       fuelingsFilters,
       fuelingChanged,
       tabChanged,
+      fuelingsPaginationChanged,
+      routesPaginationChanged,
     };
   },
 });
