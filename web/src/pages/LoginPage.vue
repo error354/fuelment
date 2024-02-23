@@ -23,9 +23,9 @@
 import { defineComponent, ref } from "vue";
 import { useProfileStore } from "../stores/profile.js";
 import { useRouter } from "vue-router";
-import AuthButton from "../components/AuthButton.vue";
-import PasswordInput from "../components/PasswordInput.vue";
-import EmailInput from "../components/EmailInput.vue";
+import AuthButton from "../components/buttons/AuthButton.vue";
+import PasswordInput from "../components/inputs/PasswordInput.vue";
+import EmailInput from "../components/inputs/EmailInput.vue";
 
 export default defineComponent({
   name: "LoginPage",

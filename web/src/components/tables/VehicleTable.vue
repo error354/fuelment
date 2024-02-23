@@ -80,7 +80,7 @@
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
-import { i18n } from "../boot/i18n";
+import { i18n } from "src/boot/i18n";
 import FuelTypeDot from "src/components/FuelTypeDot.vue";
 import { useFuelingDialog } from "src/composables/fuelingDialog";
 

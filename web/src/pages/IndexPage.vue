@@ -31,7 +31,7 @@
 import { defineComponent, ref } from "vue";
 import { useProfileStore } from "../stores/profile.js";
 import draggable from "zhyswan-vuedraggable";
-import VehicleTable from "src/components/VehicleTable.vue";
+import VehicleTable from "src/components/tables/VehicleTable.vue";
 
 export default defineComponent({
   name: "IndexPage",

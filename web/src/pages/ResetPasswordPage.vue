@@ -27,8 +27,8 @@ import { useProfileStore } from "../stores/profile.js";
 import { useRouter, useRoute } from "vue-router";
 import { useQuasar } from "quasar";
 import { useI18n } from "vue-i18n";
-import AuthButton from "../components/AuthButton.vue";
-import PasswordInput from "../components/PasswordInput.vue";
+import AuthButton from "../components/buttons/AuthButton.vue";
+import PasswordInput from "../components/inputs/PasswordInput.vue";
 
 export default defineComponent({
   name: "ResetPasswordPage",

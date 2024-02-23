@@ -23,8 +23,8 @@
 <script setup>
 import { useRoute } from "vue-router";
 import VehicleDataList from "../components/VehicleDataList.vue";
-import VehicleDetailsTables from "../components/VehicleDetailsTables.vue";
-import VehicleDetailsTablesLoadingSkeleton from "../components/VehicleDetailsTablesLoadingSkeleton.vue";
+import VehicleDetailsTables from "../components/tables/VehicleDetailsTables.vue";
+import VehicleDetailsTablesLoadingSkeleton from "../components/skeletons/VehicleDetailsTablesLoadingSkeleton.vue";
 
 const route = useRoute();
 </script>

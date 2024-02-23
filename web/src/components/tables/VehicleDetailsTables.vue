@@ -107,11 +107,11 @@ import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRoute } from "vue-router";
 import { apiClient, handleErrors } from "src/boot/apiClient";
-import { i18n } from "../boot/i18n";
+import { i18n } from "src/boot/i18n";
 import FuelTypeDot from "src/components/FuelTypeDot.vue";
-import VehicleDetailsFuelingsTable from "src/components/VehicleDetailsFuelingsTable.vue";
-import VehicleDetailsRoutesTable from "src/components/VehicleDetailsRoutesTable.vue";
-import FuelingsFiltersDialog from "src/components/FuelingsFiltersDialog.vue";
+import VehicleDetailsFuelingsTable from "src/components/tables/VehicleDetailsFuelingsTable.vue";
+import VehicleDetailsRoutesTable from "src/components/tables/VehicleDetailsRoutesTable.vue";
+import FuelingsFiltersDialog from "src/components/dialogs/FuelingsFiltersDialog.vue";
 import { useFuelingDialog } from "src/composables/fuelingDialog";
 import { useUrlHelper } from "src/composables/urlHelper";
 
@@ -145,8 +145,12 @@ export default defineComponent({
     const queryParamsToFilters = (
       dateTo = route.query.dateTo,
       dateFrom = route.query.dateFrom,
-      mileageTo = Number(route.query.mileageTo),
-      mileageFrom = Number(route.query.mileageFrom)
+      mileageTo = route.query.mileageTo
+        ? Number(route.query.mileageTo)
+        : route.query.mileageTo,
+      mileageFrom = route.query.mileageFrom
+        ? Number(route.query.mileageFrom)
+        : route.query.mileageFrom
     ) => {
       return {
         date: {
@@ -344,7 +348,7 @@ export default defineComponent({
       return "fuelings";
     };
 
-    const setQueryParams = (fuelingsPage, routesPage, tab, filters) => {
+    const setQueryParams = (fuelingsPage, routesPage, tab, filters = {}) => {
       urlHelper.setQueryParams({
         fuelingsPage: fuelingsPage,
         routesPage: routesPage,

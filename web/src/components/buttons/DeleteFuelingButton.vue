@@ -14,9 +14,9 @@
 <script>
 import { defineComponent } from "vue";
 import { useQuasar } from "quasar";
-import { i18n } from "../boot/i18n";
+import { i18n } from "../../boot/i18n";
 import { apiClient, handleErrors } from "src/boot/apiClient";
-import ConfirmDialog from "src/components/ConfirmDialog.vue";
+import ConfirmDialog from "src/components/dialogs/ConfirmDialog.vue";
 
 const $t = i18n.global.t;
 export default defineComponent({

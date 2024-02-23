@@ -104,8 +104,8 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useDialogPluginComponent, date } from "quasar";
-import DialogInput from "./DialogInput.vue";
-import DialogNumberInput from "./DialogNumberInput.vue";
+import DialogInput from "src/components/inputs/DialogInput.vue";
+import DialogNumberInput from "src/components/inputs/DialogNumberInput.vue";
 
 const props = defineProps({
   vehicleId: Number,

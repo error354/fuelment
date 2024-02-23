@@ -168,7 +168,7 @@ import { defineComponent, ref } from "vue";
 import { useProfileStore } from "../stores/profile.js";
 import { storeToRefs } from "pinia";
 import { useRouter } from "vue-router";
-import DrawerButton from "src/components/DrawerButton.vue";
+import DrawerButton from "src/components/buttons/DrawerButton.vue";
 
 export default defineComponent({
   name: "MainLayout",

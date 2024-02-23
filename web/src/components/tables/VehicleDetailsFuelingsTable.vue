@@ -80,10 +80,10 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { toRefs, ref } from "vue";
-import { i18n } from "../boot/i18n";
-import RouteDataDialog from "src/components/RouteDataDialog.vue";
-import DeleteFuelingButton from "src/components/DeleteFuelingButton.vue";
-import EditFuelingDialog from "src/components/EditFuelingDialog.vue";
+import { i18n } from "src/boot/i18n";
+import RouteDataDialog from "src/components/dialogs/RouteDataDialog.vue";
+import DeleteFuelingButton from "src/components/buttons/DeleteFuelingButton.vue";
+import EditFuelingDialog from "src/components/dialogs/EditFuelingDialog.vue";
 
 const $t = i18n.global.t;
 

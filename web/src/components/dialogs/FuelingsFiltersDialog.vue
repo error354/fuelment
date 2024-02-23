@@ -64,10 +64,10 @@
 </template>
 
 <script setup>
-import { ref, defineModel } from "vue";
-import { useDialogPluginComponent, date } from "quasar";
-import DateInput from "./DateInput.vue";
-import DialogNumberInput from "./DialogNumberInput.vue";
+import { defineModel } from "vue";
+import { useDialogPluginComponent } from "quasar";
+import DateInput from "src/components/inputs/DateInput.vue";
+import DialogNumberInput from "src/components/inputs/DialogNumberInput.vue";
 
 const emit = defineEmits(["applyFilters", ...useDialogPluginComponent.emits]);
 

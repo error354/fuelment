@@ -37,8 +37,8 @@
 import { defineComponent, ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
-import DataList from "../components/DataList.vue";
-import DataListElement from "../components/DataListElement.vue";
+import DataList from "src/components/DataList.vue";
+import DataListElement from "src/components/DataListElement.vue";
 
 export default defineComponent({
   name: "RouteDataDialog",

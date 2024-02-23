@@ -1,5 +1,5 @@
 import { useQuasar } from "quasar";
-import AddFuelingDialog from "src/components/AddFuelingDialog.vue";
+import AddFuelingDialog from "src/components/dialogs/AddFuelingDialog.vue";
 
 export function useFuelingDialog(context) {
   const $q = useQuasar();

@@ -22,8 +22,8 @@ import { defineComponent, ref } from "vue";
 import { useProfileStore } from "../stores/profile.js";
 import { useQuasar } from "quasar";
 import { useI18n } from "vue-i18n";
-import AuthButton from "../components/AuthButton.vue";
-import EmailInput from "../components/EmailInput.vue";
+import AuthButton from "../components/buttons/AuthButton.vue";
+import EmailInput from "../components/inputs/EmailInput.vue";
 
 export default defineComponent({
   name: "ForgotPasswordPage",

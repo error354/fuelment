@@ -32,7 +32,7 @@
 <script>
 import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
-import { i18n } from "../boot/i18n";
+import { i18n } from "src/boot/i18n";
 
 const $t = i18n.global.t;
 export default {

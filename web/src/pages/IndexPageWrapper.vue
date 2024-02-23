@@ -28,7 +28,7 @@ import { ref } from "vue";
 import { useProfileStore } from "../stores/profile.js";
 import { storeToRefs } from "pinia";
 import IndexPage from "./IndexPage.vue";
-import VehicleTableLoadingSkeleton from "src/components/VehicleTableLoadingSkeleton.vue";
+import VehicleTableLoadingSkeleton from "src/components/skeletons/VehicleTableLoadingSkeleton.vue";
 
 export default {
   components: { IndexPage, VehicleTableLoadingSkeleton },
