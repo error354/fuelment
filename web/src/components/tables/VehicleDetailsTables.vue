@@ -51,7 +51,7 @@
         rounded
         floating
         class="q-mr-sm q-mt-sm"
-        v-if="fuelingsFilters && Object.keys(fuelingsFilters).length"
+        v-if="areFiltersActive()"
       />
       <q-tooltip self="center middle">{{
         $t("fuelingsTable.filter")
@@ -164,6 +164,23 @@ export default defineComponent({
       };
     };
     const fuelingsFilters = ref(queryParamsToFilters());
+
+    const isObjectEmpty = (obj) => {
+      let result = false;
+      Object.values(obj).every((o) => {
+        if (o === null || o === undefined || o === "") {
+          result = true;
+        }
+        if (typeof o == "object") {
+          result = isObjectEmpty(o);
+        }
+      });
+      return result;
+    };
+
+    const areFiltersActive = () => {
+      return !isObjectEmpty(queryParamsToFilters());
+    };
 
     const showFuelingsFiltersDialog = () => {
       $q.dialog({
@@ -451,6 +468,7 @@ export default defineComponent({
       tabChanged,
       fuelingsPaginationChanged,
       routesPaginationChanged,
+      areFiltersActive,
     };
   },
 });
