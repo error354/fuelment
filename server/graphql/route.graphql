@@ -12,6 +12,9 @@ type Route {
     "Average cost of driving one kilometer on the route"
     kilometerCost: Float @field(resolver: "App\\Models\\Route@getKilometerCost")
 
+    "Total cost of all fuelings of the route"
+    totalCost: Float @field(resolver: "App\\Models\\Route@getTotalCost")
+
     "Vehicle that did that route"
     vehicle: Vehicle!
 

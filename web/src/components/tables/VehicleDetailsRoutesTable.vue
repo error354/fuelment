@@ -68,6 +68,12 @@ export default defineComponent({
         field: "kilometerCost",
         required: true,
       },
+      {
+        name: "totalCost",
+        label: $t("routesTable.totalCost"),
+        field: "totalCost",
+        required: true,
+      },
       { name: "actions", label: "Akcje", align: "center" },
     ]);
 

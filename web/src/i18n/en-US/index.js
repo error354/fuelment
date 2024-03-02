@@ -84,6 +84,7 @@ export default {
     kilometerCost: "Kilometer cost",
     delete: "Delete",
     empty: "This vehicle has no routes yet",
+    totalCost: "Total cost",
   },
   vehicleDetails: {
     settings: "Settings",

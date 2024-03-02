@@ -261,6 +261,7 @@ export default defineComponent({
             avgFuelConsumption
             distance
             kilometerCost
+            totalCost
           }
           paginatorInfo {
             total

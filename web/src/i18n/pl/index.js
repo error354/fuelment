@@ -84,6 +84,7 @@ export default {
     kilometerCost: "Koszt kilometra",
     delete: "Usuń",
     empty: "Ten pojazd nie ma jeszcze tras",
+    totalCost: "Koszt całkowity",
   },
   vehicleDetails: {
     settings: "Ustawienia",

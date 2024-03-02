@@ -112,16 +112,26 @@ class Route extends Model
     public function getKilometerCost($route = null)
     {
         $route ??= $this;
+        $totalCost = $route->getTotalCost($route);
+        $distance = $route->getDistance($route);
+        if (!$distance) {
+            return null;
+        }
+        return round(($totalCost / $distance), 2);
+    }
+
+    /**
+     * Get total cost of all fuelings of the route
+     */
+    public function getTotalCost($route = null)
+    {
+        $route ??= $this;
         $totalCost = 0;
         $count = count($route->fuelings);
         foreach ($route->fuelings as $key => $fueling) {
             if (--$count <= 0 && !$route->getNextRoute($route)) break;
             $totalCost += $fueling->price;
         }
-        $distance = $route->getDistance($route);
-        if (!$distance) {
-            return null;
-        }
-        return round(($totalCost / $distance), 2);
+        return round($totalCost, 2);
     }
 }
