@@ -262,6 +262,7 @@ export default defineComponent({
             distance
             kilometerCost
             totalCost
+            totalAmount
           }
           paginatorInfo {
             total

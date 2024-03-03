@@ -93,12 +93,7 @@ class Route extends Model
     public function getAverageFuelConsumption($route = null)
     {
         $route ??= $this;
-        $totalAmount = 0;
-        $count = count($route->fuelings);
-        foreach ($route->fuelings as $key => $fueling) {
-            if (--$count <= 0 && !$route->getNextRoute($route)) break;
-            $totalAmount += $fueling->amount;
-        }
+        $totalAmount = $route->getTotalAmount($route);
         $distance = $route->getDistance($route);
         if (!$distance) {
             return null;
@@ -133,5 +128,20 @@ class Route extends Model
             $totalCost += $fueling->price;
         }
         return round($totalCost, 2);
+    }
+
+    /**
+     * Get total fuel amount of all fuelings of the route
+     */
+    public function getTotalAmount($route = null)
+    {
+        $route ??= $this;
+        $totalAmount = 0;
+        $count = count($route->fuelings);
+        foreach ($route->fuelings as $key => $fueling) {
+            if (--$count <= 0 && !$route->getNextRoute($route)) break;
+            $totalAmount += $fueling->amount;
+        }
+        return round($totalAmount, 2);
     }
 }

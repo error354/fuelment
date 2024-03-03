@@ -74,6 +74,12 @@ export default defineComponent({
         field: "totalCost",
         required: true,
       },
+      {
+        name: "totalAmount",
+        label: $t("routesTable.totalAmount"),
+        field: "totalAmount",
+        required: true,
+      },
       { name: "actions", label: "Akcje", align: "center" },
     ]);
 

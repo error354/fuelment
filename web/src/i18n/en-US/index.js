@@ -85,6 +85,7 @@ export default {
     delete: "Delete",
     empty: "This vehicle has no routes yet",
     totalCost: "Total cost",
+    totalAmount: "Fuel amount",
   },
   vehicleDetails: {
     settings: "Settings",

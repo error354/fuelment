@@ -85,6 +85,7 @@ export default {
     delete: "Usuń",
     empty: "Ten pojazd nie ma jeszcze tras",
     totalCost: "Koszt całkowity",
+    totalAmount: "Ilość paliwa",
   },
   vehicleDetails: {
     settings: "Ustawienia",

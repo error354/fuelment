@@ -15,6 +15,9 @@ type Route {
     "Total cost of all fuelings of the route"
     totalCost: Float @field(resolver: "App\\Models\\Route@getTotalCost")
 
+    "Total fuel amount of all fuelings of the route"
+    totalAmount: Float @field(resolver: "App\\Models\\Route@getTotalAmount")
+
     "Vehicle that did that route"
     vehicle: Vehicle!
 

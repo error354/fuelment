@@ -7,20 +7,32 @@
       <q-card-section>
         <data-list>
           <data-list-element
-            name="Średnie spalanie:"
+            :name="$t('routesTable.avgFuelConsumption')"
             :value="route.avgFuelConsumption"
             :loading="loadingRoute"
             light
           />
           <data-list-element
-            name="Przejechany dystans:"
+            :name="$t('routesTable.distance')"
             :value="route.distance"
             :loading="loadingRoute"
             light
           />
           <data-list-element
-            name="Kosz 1 km:"
+            :name="$t('routesTable.kilometerCost')"
             :value="route.kilometerCost"
+            :loading="loadingRoute"
+            light
+          />
+          <data-list-element
+            :name="$t('routesTable.totalCost')"
+            :value="route.totalCost"
+            :loading="loadingRoute"
+            light
+          />
+          <data-list-element
+            :name="$t('routesTable.totalAmount')"
+            :value="route.totalAmount"
             :loading="loadingRoute"
             light
           />
@@ -64,6 +76,8 @@ export default defineComponent({
           avgFuelConsumption
           distance
           kilometerCost
+          totalCost
+          totalAmount
         }
       }
     `;
