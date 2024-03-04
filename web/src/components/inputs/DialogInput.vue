@@ -15,19 +15,15 @@
   </q-input>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import { i18n } from "src/boot/i18n";
 
 const $t = i18n.global.t;
 
-export default defineComponent({
-  name: "DialogInput",
-  props: {
-    rules: {
-      type: Array,
-      default: Array,
-    },
+const props = defineProps({
+  rules: {
+    type: Array,
+    default: Array,
   },
 });
 </script>

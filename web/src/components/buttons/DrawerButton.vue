@@ -12,16 +12,11 @@
   </q-item>
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "DrawerButton",
-  props: {
-    icon: String,
-    label: String,
-    loading: Boolean,
-  },
+<script setup>
+const props = defineProps({
+  icon: String,
+  label: String,
+  loading: Boolean,
 });
 </script>
 

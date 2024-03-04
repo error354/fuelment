@@ -9,23 +9,16 @@
   />
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import DialogInput from "./DialogInput.vue";
 
-export default defineComponent({
-  components: {
-    DialogInput,
-  },
-  name: "DialogNumberInput",
+const props = defineProps({
   props: {
-    props: {
-      value: String,
-    },
-    rules: {
-      type: Array,
-      default: Array,
-    },
+    value: String,
+  },
+  rules: {
+    type: Array,
+    default: Array,
   },
 });
 </script>

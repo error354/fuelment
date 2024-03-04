@@ -39,36 +39,29 @@
         </data-list>
       </q-card-section>
       <q-card-actions align="right">
-        <q-btn color="primary" flat label="Zamknij" @click="onCancelClick" />
+        <q-btn color="primary" flat label="Zamknij" @click="onDialogOK" />
       </q-card-actions>
     </q-card>
   </q-dialog>
 </template>
 
-<script>
-import { defineComponent, ref } from "vue";
+<script setup>
+import { ref } from "vue";
 import { useDialogPluginComponent } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
 import DataList from "src/components/DataList.vue";
 import DataListElement from "src/components/DataListElement.vue";
 
-export default defineComponent({
-  name: "RouteDataDialog",
-  props: {
-    routeId: Number,
-  },
-  components: {
-    DataList,
-    DataListElement,
-  },
-  emits: [...useDialogPluginComponent.emits],
+const props = defineProps({
+  routeId: Number,
+});
+const emits = defineEmits([...useDialogPluginComponent.emits]);
 
-  setup(props) {
-    const { dialogRef, onDialogCancel } = useDialogPluginComponent();
+const { dialogRef, onDialogOK } = useDialogPluginComponent();
 
-    const loadingRoute = ref(false);
-    const route = ref({});
-    const getRouteQuery = `
+const loadingRoute = ref(false);
+const route = ref({});
+const getRouteQuery = `
       query getRoute ($routeId: ID!) {
         route(
           id: $routeId
@@ -82,34 +75,24 @@ export default defineComponent({
       }
     `;
 
-    async function getRoute() {
-      loadingRoute.value = true;
-      await apiClient
-        .executeQuery({
-          query: getRouteQuery,
-          variables: {
-            routeId: props.routeId,
-          },
-          tags: [`route`],
-        })
-        .then((response) => {
-          if (response.error) {
-            handleErrors(response.error);
-          }
-          route.value = response.data.route;
-        });
-      loadingRoute.value = false;
-    }
+async function getRoute() {
+  loadingRoute.value = true;
+  await apiClient
+    .executeQuery({
+      query: getRouteQuery,
+      variables: {
+        routeId: props.routeId,
+      },
+      tags: [`route`],
+    })
+    .then((response) => {
+      if (response.error) {
+        handleErrors(response.error);
+      }
+      route.value = response.data.route;
+    });
+  loadingRoute.value = false;
+}
 
-    getRoute();
-
-    return {
-      dialogRef,
-      onCancelClick: onDialogCancel,
-      props,
-      loadingRoute,
-      route,
-    };
-  },
-});
+getRoute();
 </script>

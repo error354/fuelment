@@ -9,11 +9,8 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "DataList",
-  props: {
-    title: String,
-  },
-};
+<script setup>
+const props = defineProps({
+  title: String,
+});
 </script>

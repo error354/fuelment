@@ -12,16 +12,13 @@
   </div>
 </template>
 
-<script>
-export default {
-  name: "DataListElement",
-  props: {
-    name: String,
-    value: String,
-    loading: Boolean,
-    light: Boolean,
-  },
-};
+<script setup>
+const props = defineProps({
+  name: String,
+  value: String,
+  loading: Boolean,
+  light: Boolean,
+});
 </script>
 
 <style lang="scss" scoped>
