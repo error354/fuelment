@@ -36,7 +36,7 @@
           v-if="props.row.isLastOfRoute"
           @click="showRouteDataDialog(props.row.route.id)"
         >
-          <q-tooltip>Koniec trasy</q-tooltip>
+          <q-tooltip>{{ $t("fuelingsTable.routeEnd") }}</q-tooltip>
         </q-btn>
       </q-td>
     </template>
@@ -129,7 +129,6 @@ const showEditFuelingDialog = (
       },
     })
     .onOk(() => {
-      console.log("ok");
       emit("fuelingChanged");
     });
 

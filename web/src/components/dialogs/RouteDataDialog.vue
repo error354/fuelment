@@ -2,7 +2,7 @@
   <q-dialog ref="dialogRef">
     <q-card class="q-dialog-plugin">
       <q-card-section>
-        <div class="text-h6">Szczegóły trasy</div>
+        <div class="text-h6">{{ $t("routesTable.routeDetails") }}</div>
       </q-card-section>
       <q-card-section>
         <data-list>
