@@ -76,8 +76,8 @@
   </q-table>
 </template>
 
-<script>
-import { defineComponent, ref } from "vue";
+<script setup>
+import { ref } from "vue";
 import { useQuasar } from "quasar";
 import { apiClient, handleErrors } from "src/boot/apiClient";
 import { i18n } from "src/boot/i18n";
@@ -86,74 +86,68 @@ import { useFuelingDialog } from "src/composables/fuelingDialog";
 
 const $t = i18n.global.t;
 
-export default defineComponent({
-  name: "VehicleTable",
-  components: {
-    FuelTypeDot,
+const props = defineProps({
+  vehicle: Object,
+});
+const $q = useQuasar();
+
+const { showAddFuelingDialog } = useFuelingDialog();
+
+const columns = ref([
+  {
+    name: "date",
+    label: $t("fuelingsTable.date"),
+    field: "date",
+    required: true,
   },
-  props: {
-    vehicle: Object,
+  {
+    name: "mileage",
+    label: $t("fuelingsTable.mileage"),
+    field: "mileage",
+    required: true,
   },
-  setup(props, context) {
-    const $q = useQuasar();
+  {
+    name: "amount",
+    label: $t("fuelingsTable.amount"),
+    field: "amount",
+    required: true,
+  },
+  {
+    name: "full",
+    label: $t("fuelingsTable.full"),
+    field: "full",
+    required: true,
+    align: "center",
+  },
+  {
+    name: "fuelConsumption",
+    label: $t("fuelingsTable.fuelConsumption"),
+    field: "fuelConsumption",
+    required: true,
+  },
+  {
+    name: "price",
+    label: $t("fuelingsTable.price"),
+    field: "price",
+    required: true,
+  },
+  {
+    name: "pricePerLiter",
+    label: $t("fuelingsTable.pricePerLiter"),
+  },
+]);
 
-    const { showAddFuelingDialog } = useFuelingDialog(context);
+const visibleColumns = ref(["pricePerLiter"]);
 
-    const columns = ref([
-      {
-        name: "date",
-        label: $t("fuelingsTable.date"),
-        field: "date",
-        required: true,
-      },
-      {
-        name: "mileage",
-        label: $t("fuelingsTable.mileage"),
-        field: "mileage",
-        required: true,
-      },
-      {
-        name: "amount",
-        label: $t("fuelingsTable.amount"),
-        field: "amount",
-        required: true,
-      },
-      {
-        name: "full",
-        label: $t("fuelingsTable.full"),
-        field: "full",
-        required: true,
-        align: "center",
-      },
-      {
-        name: "fuelConsumption",
-        label: $t("fuelingsTable.fuelConsumption"),
-        field: "fuelConsumption",
-        required: true,
-      },
-      {
-        name: "price",
-        label: $t("fuelingsTable.price"),
-        field: "price",
-        required: true,
-      },
-      {
-        name: "pricePerLiter",
-        label: $t("fuelingsTable.pricePerLiter"),
-      },
-    ]);
+const pricePerLiter = (price, amount) => {
+  let result = (price / amount).toFixed(2);
+  if (result == 0) {
+    result = null;
+  }
+  return result;
+};
 
-    const visibleColumns = ref(["pricePerLiter"]);
-
-    const pricePerLiter = (price, amount) => {
-      let result = (price / amount).toFixed(2);
-      if (result == 0) {
-        result = null;
-      }
-      return result;
-    };
-
-    const getFuelingsQuery = `
+const getFuelingsQuery = `
       query getFuelings ($vehicleId: ID! $page: Int, $first: Int) {
         fuelings(
           vehicleId: $vehicleId
@@ -177,57 +171,44 @@ export default defineComponent({
       }
     `;
 
-    const fuelings = ref([]);
-    const loadingFuelings = ref(false);
+const fuelings = ref([]);
+const loadingFuelings = ref(false);
 
-    const paginationProps = ref({
-      pagination: {
-        page: 1,
-        rowsPerPage: 5,
-        rowsNumber: 0,
-      },
-    });
-
-    async function getFuelings(pagination = paginationProps.value) {
-      loadingFuelings.value = true;
-      await apiClient
-        .executeQuery({
-          query: getFuelingsQuery,
-          variables: {
-            vehicleId: props.vehicle.id,
-            page: pagination.pagination.page,
-            first: 5,
-          },
-          tags: [`vehicle_${props.vehicle.id}_fuelings`],
-        })
-        .then((response) => {
-          if (response.error) {
-            handleErrors(response.error);
-          }
-          const fuelingsData = response.data.fuelings.data;
-          paginationProps.value.pagination.rowsNumber =
-            response.data.fuelings.paginatorInfo.total;
-          paginationProps.value.pagination.page =
-            response.data.fuelings.paginatorInfo.currentPage;
-          fuelings.value = fuelingsData;
-        });
-      loadingFuelings.value = false;
-    }
-
-    getFuelings();
-
-    return {
-      columns,
-      fuelings,
-      loadingFuelings,
-      paginationProps,
-      getFuelings,
-      visibleColumns,
-      pricePerLiter,
-      showAddFuelingDialog,
-    };
+const paginationProps = ref({
+  pagination: {
+    page: 1,
+    rowsPerPage: 5,
+    rowsNumber: 0,
   },
 });
+
+async function getFuelings(pagination = paginationProps.value) {
+  loadingFuelings.value = true;
+  await apiClient
+    .executeQuery({
+      query: getFuelingsQuery,
+      variables: {
+        vehicleId: props.vehicle.id,
+        page: pagination.pagination.page,
+        first: 5,
+      },
+      tags: [`vehicle_${props.vehicle.id}_fuelings`],
+    })
+    .then((response) => {
+      if (response.error) {
+        handleErrors(response.error);
+      }
+      const fuelingsData = response.data.fuelings.data;
+      paginationProps.value.pagination.rowsNumber =
+        response.data.fuelings.paginatorInfo.total;
+      paginationProps.value.pagination.page =
+        response.data.fuelings.paginatorInfo.currentPage;
+      fuelings.value = fuelingsData;
+    });
+  loadingFuelings.value = false;
+}
+
+getFuelings();
 </script>
 
 <style>

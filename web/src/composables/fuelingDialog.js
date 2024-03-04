@@ -1,7 +1,7 @@
 import { useQuasar } from "quasar";
 import AddFuelingDialog from "src/components/dialogs/AddFuelingDialog.vue";
 
-export function useFuelingDialog(context) {
+export function useFuelingDialog() {
   const $q = useQuasar();
 
   const showAddFuelingDialog = (vehicleId, vehicleName, priceSetting, title) =>

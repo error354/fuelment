@@ -103,6 +103,7 @@
 </template>
 
 <script>
+// TODO: Refactor to script setup. There's problem with async/await
 import { defineComponent, ref } from "vue";
 import { useQuasar } from "quasar";
 import { useRoute } from "vue-router";
@@ -127,7 +128,7 @@ export default defineComponent({
   props: {
     vehicleId: Number,
   },
-  async setup(props, context) {
+  async setup(props) {
     const $q = useQuasar();
     const route = useRoute();
     const urlHelper = useUrlHelper();
@@ -140,7 +141,7 @@ export default defineComponent({
     const loadingVehicle = ref(false);
     const tab = route.query.tab ? ref(route.query.tab) : ref("fuelings");
 
-    const { showAddFuelingDialog } = useFuelingDialog(context);
+    const { showAddFuelingDialog } = useFuelingDialog();
 
     const queryParamsToFilters = (
       dateTo = route.query.dateTo,
