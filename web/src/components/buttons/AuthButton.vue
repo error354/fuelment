@@ -11,20 +11,15 @@
   />
 </template>
 
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "AuthButton",
-  props: {
-    label: {
-      type: String,
-      required: true,
-    },
-    loading: {
-      type: Boolean,
-      default: false,
-    },
+<script setup>
+const props = defineProps({
+  label: {
+    type: String,
+    required: true,
+  },
+  loading: {
+    type: Boolean,
+    default: false,
   },
 });
 </script>
