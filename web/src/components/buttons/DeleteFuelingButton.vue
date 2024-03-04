@@ -28,7 +28,7 @@ const props = defineProps({
     reqired: true,
   },
 });
-const emits = defineEmits(["fuelingChanged"]);
+const emit = defineEmits(["fuelingChanged"]);
 const $q = useQuasar();
 
 const showConfirmDialog = async () =>
