@@ -5,7 +5,7 @@
     :value="value"
     :type="showPassword ? 'text' : 'password'"
     class="q-mb-md"
-    :label="label"
+    :label="labelWithDefault"
     :rules="[
       $rules.maxLength(255, $t('validation.maxLength', { number: 255 })),
       ...rules,
@@ -22,31 +22,28 @@
   </q-input>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { ref, computed } from "vue";
 import { i18n } from "src/boot/i18n";
 
 const $t = i18n.global.t;
 
-export default defineComponent({
-  name: "PasswordInput",
-  props: {
-    value: String,
-    label: {
-      type: String,
-      default: $t("login.password"),
-    },
-    rules: {
-      type: Array,
-      required: false,
-    },
+const props = defineProps({
+  value: String,
+  label: {
+    type: String,
+    default: "",
   },
-  data() {
-    return {
-      showPassword: false,
-    };
+  rules: {
+    type: Array,
+    required: false,
   },
 });
+const labelWithDefault = computed(() => {
+  return props.label || $t("login.password");
+});
+
+const showPassword = ref(false);
 </script>
 
 <style></style>

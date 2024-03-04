@@ -5,7 +5,7 @@
     :value="value"
     type="email"
     class="q-mb-md"
-    :label="label"
+    :label="labelWithDefault"
     :rules="[
       $rules.email($t('validation.email')),
       $rules.maxLength(255, $t('validation.maxLength', { number: 255 })),
@@ -15,25 +15,25 @@
   />
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
+import { computed } from "vue";
 import { i18n } from "src/boot/i18n";
 
 const $t = i18n.global.t;
 
-export default defineComponent({
-  name: "EmailInput",
-  props: {
-    value: String,
-    label: {
-      type: String,
-      default: $t("login.emailAddress"),
-    },
-    rules: {
-      type: Array,
-      required: false,
-    },
+const props = defineProps({
+  value: String,
+  label: {
+    type: String,
+    default: "",
   },
+  rules: {
+    type: Array,
+    required: false,
+  },
+});
+const labelWithDefault = computed(() => {
+  return props.label || $t("login.emailAddress");
 });
 </script>
 
